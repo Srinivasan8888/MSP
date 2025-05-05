@@ -1,4 +1,4 @@
-import mspModel from "../Models/msp.model";
+import MSPSchema from '../Models/msp.model.js'
 
 export const createMsp = async (req, res) => {
   const {
@@ -14,6 +14,7 @@ export const createMsp = async (req, res) => {
     airquality,
     signal,
     battery,
+    time,
   } = req.query;
 
   // Validate required fields
@@ -29,13 +30,14 @@ export const createMsp = async (req, res) => {
     altitude === undefined ||
     airquality === undefined ||
     signal === undefined ||
-    battery === undefined
+    battery === undefined ||
+    time === undefined
   ) {
     return res.status(400).json({ error: "All fields are required." });
   }
 
   try {
-    const newSensor = new mspModel({
+    const newSensor = new MSPSchema({
       id,
       vibration: String(vibration),
       magneticflux: String(magneticflux),
@@ -48,6 +50,7 @@ export const createMsp = async (req, res) => {
       airquality: String(airquality),
       signal: String(signal),
       battery: String(battery),
+      TIME: String(time)
     });
 
     const savedSensor = await newSensor.save();

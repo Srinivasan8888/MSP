@@ -1,4 +1,3 @@
-// const { verifyRefreshToken } = require("../../Helpers/jwt_helper")
 
 import SensorModel1 from '../Models/sensorModel1.js';
 import SensorModel2 from '../Models/sensorModel2.js';

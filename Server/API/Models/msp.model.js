@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const sensorSchema = new Schema({
+const MSPSchema = new Schema({
     id: {
         type: String,
         required: false,
@@ -51,11 +51,11 @@ const sensorSchema = new Schema({
         default: null,
     },
     TIME: {
-        type: Date,
-        default: Date.now,
+        type: String,
+        default: null,
     }
 }, {
     timestamps: true
 });
 
-export default mongoose.model('MSP-Data', sensorSchema);
+export default mongoose.model('MSP-Data', MSPSchema);

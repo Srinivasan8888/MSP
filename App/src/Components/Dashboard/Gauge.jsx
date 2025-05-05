@@ -5,8 +5,8 @@ const Gauge = () => {
   
   return (
     <>
-      <div className="w-[155px] h-full">
-              <p className="text-white text-center">RPM</p>
+      <div className="2xl:w-[155px] xl:w-[120px] h-full">
+              <p className="text-white text-center text-xs 2xl:text-base">RPM</p>
               <GaugeComponent
                 GaugeComponent
                 value={50}
@@ -35,8 +35,8 @@ const Gauge = () => {
                 }}
               />
             </div>
-            <div className="w-[155px] h-full">
-              <p className="text-white text-center">Acoustics</p>
+            <div className="2xl:w-[155px] xl:w-[120px] h-full">
+              <p className="text-white text-center text-xs 2xl:text-base">Acoustics</p>
               <GaugeComponent
                 GaugeComponent
                 value={50}
@@ -65,8 +65,8 @@ const Gauge = () => {
                 }}
               />
             </div>
-            <div className="w-[155px] h-full">
-              <p className="text-white text-center">Humidity</p>
+            <div className="2xl:w-[155px] xl:w-[120px] h-full">
+              <p className="text-white text-center text-xs 2xl:text-base">Humidity</p>
               <GaugeComponent
                 GaugeComponent
                 value={50}
@@ -95,8 +95,8 @@ const Gauge = () => {
                 }}
               />
             </div>
-            <div className="w-[155px] h-full">
-              <p className="text-white text-center">Pressure</p>
+            <div className="2xl:w-[155px] xl:w-[120px] h-full">
+              <p className="text-white text-center text-xs 2xl:text-base">Pressure</p>
               <GaugeComponent
                 GaugeComponent
                 value={50}
@@ -125,8 +125,8 @@ const Gauge = () => {
                 }}
               />
             </div>
-            <div className="w-[155px] h-full">
-              <p className="text-white text-center">Air Qualtiy</p>
+            <div className="2xl:w-[155px] xl:w-[120px] h-full">
+              <p className="text-white text-center text-xs 2xl:text-base">Air Qualtiy</p>
               <GaugeComponent
                 GaugeComponent
                 value={50}
@@ -155,8 +155,8 @@ const Gauge = () => {
                 }}
               />
             </div>
-            <div className="w-[155px] h-full">
-              <p className="text-white text-center">Signal</p>
+            <div className="2xl:w-[155px] xl:w-[120px] h-full">
+              <p className="text-white text-center text-xs 2xl:text-base">Battery</p>
               <GaugeComponent
                 GaugeComponent
                 value={50}

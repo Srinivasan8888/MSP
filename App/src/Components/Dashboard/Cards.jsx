@@ -85,19 +85,19 @@ const Card = ({
 
   return (
     <div className="w-full px-2 mb-4">
-      <div className="rounded-lg bg-[#102d49] shadow-lg md:shadow-xl relative overflow-hidden">
-        <div className="px-3 pt-8 pb-10 text-center relative z-10">
-          <h4 className="text-sm uppercase text-white leading-tight flex items-center justify-center gap-1">
+      <div className="rounded-lg bg-[#102d49] shadow-lg md:shadow-xl relative overflow-hidden lg:h-[120px] xl:h-24 2xl:h-28">
+        <div className="px-3 xl:pt-3 pt-8 pb-10 text-center relative z-10">
+          <p className="text-xs font-thin 2xl:text-sm xl:uppercase text-white flex items-center justify-center gap-1  ">
             {title} <span className="lowercase">({unit})</span>
-          </h4>
-          <h3 className="text-3xl text-white font-semibold leading-tight my-3">
+          </p>
+          <h3 className="xl:text-base 2xl:text-3xl text-white font-semibold leading-tight my-3 ">
             {icon && <span className="inline-block w-6 h-6 ">{icon}</span>}{" "}
             {typeof value === "number" ? value.toFixed(1) : value}
           </h3>
           {/* <p className={`text-xs ${change.color} leading-tight`}>
             {change.text}
           </p> */}
-        </div>
+        </div> 
         <div className="absolute bottom-0 inset-x-0">
           <canvas ref={chartRef} height="70"></canvas>
         </div>
@@ -279,21 +279,21 @@ const Cards = () => {
   return (
     // <div className="min-w-screen min-h-screen bg-gray-200 px-5 py-5 overflow-y-auto">
     //   <div className="max-w-6xl mx-auto">
-        <div className="-mx-2 md:flex md:flex-wrap">
+        <div className="-mx-2 lg:flex lg:flex-wrap md:grid md:grid-cols-2">
           {cardsData.map((card, index) => (
-            <div key={index} className="w-full md:w-1/6 px-2 ">
+            <div key={index} className="w-full xl:w-1/6 px-2 ">
               <Card {...card} />
             </div>
           ))}
 
-          <div className="w-full md:w-1/6 px-3 mb-4 h-[152px] ">
+          <div className="w-full xl:w-1/6 px-3 mb-4 h-[152px] lg:h-[120px] xl:h-[90px] 2xl:h-28">
             <div className="rounded-lg bg-[#102d49]  shadow-lg md:shadow-xl relative overflow-hidden h-full flex flex-col justify-between">
-              <div className="px-3 pt-8 pb-4 text-center relative z-10 flex-grow">
-                <h4 className="text-sm uppercase text-white leading-tight">
+            <div className="px-3 xl:pt-3 pt-8 pb-10 text-center relative z-10">
+                <h4 className="text-xs xl:text-sm uppercase text-white leading-tight ">
                   Battery
 
                 </h4>
-                <div className="w-48 my-3 ml-6">
+                <div className="w-48 my-3 ml-28 lg:ml-0  2xl:ml-6">
                   <div className="shadow w-1/2 rounded border-2 border-gray-400 flex my-1 relative">
                     <div className="border-r-8 h-6 rounded-r absolute flex border-gray-400 ml-24 mt-2 z-10" />
                     <div
@@ -310,17 +310,17 @@ const Cards = () => {
             </div>
           </div>
 
-          <div className="w-full md:w-1/6 px-3 mb-4 h-[152px] ">
+          <div className="w-full xl:w-1/6 px-3 mb-4 h-[152px] lg:h-[120px] xl:h-[90px] 2xl:h-28">
             <div className="rounded-lg bg-[#102d49]  shadow-lg md:shadow-xl relative overflow-hidden h-full flex flex-col justify-between">
-              <div className="px-3 pt-8 pb-4 text-center relative z-10 flex-grow">
-                <h4 className="text-sm uppercase text-white leading-tight">
+            <div className="px-3 xl:pt-3 pt-8 pb-10 text-center relative z-10">
+                <p className="text-xs xl:text-sm uppercase text-white leading-tight ">
                   System Status
-                </h4>
+                </p>
                 <div className="flex items-center justify-center gap-2 mt-2">
                   <span className="inline-block w-3 h-3 rounded-full bg-green-500"></span>
-                  <span className="text-lg text-white">Online</span>
+                  <span className="text-sm xl:text-lg text-white">Online</span>
                 </div>
-                <p className="text-medium text-white mt-1">4/29/25 12:43 PM</p>
+                <p className=" text-base xl:text-medium text-white mt-1">4/29/25 12:43 PM</p>
               </div>
               
             </div>

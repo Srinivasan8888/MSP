@@ -1,14 +1,13 @@
 import React from 'react'
-import Gauge from '../../Components/Dashboard/Gauge'
+import Dropdown from '../../Components/Dashboard/Dropdown'
 
 const Test = () => {
   return (
     <div>Test
-        {/* <div>
-            <Gauge/>
-        </div> */}
+      <div>
+        <Dropdown/>
+      </div>
     </div>
-    
   )
 }
 
