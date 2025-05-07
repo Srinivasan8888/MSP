@@ -1,30 +1,21 @@
 import React from 'react'
 import './CSS/Scrollbar.css'
+import { useDashboard } from '../../Context/DashboardContext'
 
 const Table = () => {
-    const generateRandomData = () => {
-        return {
-            time: new Date().toLocaleString(),
-            vibration: (Math.random() * 10).toFixed(2) + ' mm/s',
-            magneticFlux: (Math.random() * 100).toFixed(2) + ' Gauss',
-            rpm: Math.floor(Math.random() * 5000) + ' RPM',
-            acoustics: (Math.random() * 100).toFixed(2) + ' dB',
-            temperature: (Math.random() * 50).toFixed(2) + ' °C',
-            humidity: (Math.random() * 100).toFixed(2) + ' % r.H.',
-            pressure: (Math.random() * 1000 + 900).toFixed(2) + ' hPa',
-            altitude: (Math.random() * 2000).toFixed(2) + ' m',
-            airQuality: (Math.random() * 1000).toFixed(2) + ' ppm',
-            signal: Math.floor(Math.random() * 100) + ' %',
-            battery: Math.floor(Math.random() * 100) + ' %'
-        };
-    };
+    const { dashboardData, loading } = useDashboard()
 
-    const sensorData = Array(10).fill(null).map(() => generateRandomData());
+    if (loading || !dashboardData) {
+        return <div className="text-white">Loading...</div>
+    }
+
+    const { allData } = dashboardData
 
     return (
-        <div className="relative overflow-x-auto overflow-y-auto scrollbar-custom h-full rounded-xl">
+        <div className="relative overflow-x-auto overflow-y-auto scrollbar-custom h-full rounded-xl border border-gray-400">
             <table className="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
-                <thead className="text-xs text-white uppercase   sticky top-0 z-10 rounded-xl  bg-[rgba(17,45,73,1)]">
+                <thead className="text-xs text-white uppercase   sticky top-0 z-10 rounded-xl bg-[#293056]">
+                {/* bg-[rgba(17,45,73,1)] */}
                     <tr>
                         <th scope="col" className="px-6 py-3" title="Time">T</th>
                         <th scope="col" className="px-6 py-3" title="Vibration">V</th>
@@ -41,20 +32,20 @@ const Table = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {sensorData.map((data, index) => (
-                        <tr key={index} className="text-xs bg-gray-800 text-white">
-                            <td className="px-6 py-4">{data.time}</td>
-                            <td className="px-6 py-4">{data.vibration}</td>
-                            <td className="px-6 py-4">{data.magneticFlux}</td>
-                            <td className="px-6 py-4">{data.rpm}</td>
-                            <td className="px-6 py-4">{data.acoustics}</td>
-                            <td className="px-6 py-4">{data.temperature}</td>
-                            <td className="px-6 py-4">{data.humidity}</td>
-                            <td className="px-6 py-4">{data.pressure}</td>
-                            <td className="px-6 py-4">{data.altitude}</td>
-                            <td className="px-6 py-4">{data.airQuality}</td>
-                            <td className="px-6 py-4">{data.signal}</td>
-                            <td className="px-6 py-4">{data.battery}</td>
+                    {allData.map((data, index) => (
+                        <tr key={index} className="text-xs bg-[#1D254D] text-white">
+                            <td className="px-6 py-4">{data.TIME}</td>
+                            <td className="px-6 py-4">{data.vibration} mm/s</td>
+                            <td className="px-6 py-4">{data.magneticflux} Gauss</td>
+                            <td className="px-6 py-4">{data.rpm} RPM</td>
+                            <td className="px-6 py-4">{data.acoustics} dB</td>
+                            <td className="px-6 py-4">{data.temperature} °C</td>
+                            <td className="px-6 py-4">{data.humidity} % r.H.</td>
+                            <td className="px-6 py-4">{data.pressure} hPa</td>
+                            <td className="px-6 py-4">{data.altitude} m</td>
+                            <td className="px-6 py-4">{data.airquality} ppm</td>
+                            <td className="px-6 py-4">{data.signal} %</td>
+                            <td className="px-6 py-4">{data.battery} %</td>
                         </tr>
                     ))}
                 </tbody>

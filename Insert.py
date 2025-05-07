@@ -1,6 +1,7 @@
 import requests
 import random
 import string
+import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -9,7 +10,6 @@ def random_string(length=6):
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=length))
 
 # Function to generate random sensor data
-
 def generate_sensor_data():
     return {
         "id": '2501',
@@ -29,17 +29,28 @@ def generate_sensor_data():
 
 # Main function to send POST request
 def send_sensor_data(url):
-    data = generate_sensor_data()
-    print("Sending data:", data)
-    
-    # Print the full URL with parameters
-    full_url = f"{url}?" + "&".join([f"{k}={v}" for k, v in data.items()])
-    print("Full URL:", full_url)
+    try:
+        data = generate_sensor_data()
+        print("\nSending data:", data)
+        
+        # Print the full URL with parameters
+        full_url = f"{url}?" + "&".join([f"{k}={v}" for k, v in data.items()])
+        print("Full URL:", full_url)
 
-    response = requests.post(url, params=data)
-    print("Response status code:", response.status_code)
-    print("Response body:", response.text)
+        response = requests.post(url, params=data)
+        print("Response status code:", response.status_code)
+        print("Response body:", response.text)
+    except Exception as e:
+        print(f"Error occurred: {e}")
 
 if __name__ == "__main__":
     API_URL = "http://localhost:4000/api/v1/create"
-    send_sensor_data(API_URL)
+    print("Starting sensor data transmission...")
+    print("Press Ctrl+C to stop")
+    
+    try:
+        while True:
+            send_sensor_data(API_URL)
+            time.sleep(2)  # Wait for 2 seconds before next transmission
+    except KeyboardInterrupt:
+        print("\nStopping sensor data transmission...")

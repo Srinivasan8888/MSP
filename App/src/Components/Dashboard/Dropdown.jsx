@@ -1,82 +1,71 @@
-import {
-  Combobox,
-  ComboboxButton,
-  ComboboxInput,
-  ComboboxOption,
-  ComboboxOptions,
-} from "@headlessui/react";
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
-import clsx from "clsx";
-import { useState } from "react";
+import React, { memo, useCallback } from 'react';
+import { Listbox } from '@headlessui/react';
+import { useLineGraph } from '../../Context/LineGraphContext';
 
-const people = [
-    { id: 1, name: "Vibration" },
-    { id: 2, name: "Magneticflux" },
-    { id: 3, name: "RPM" },
-    { id: 4, name: "Acoustics" },
-    { id: 5, name: "Temperature" },
-    { id: 6, name: "Humidity" },
-    { id: 7, name: "Pressure" },
-    { id: 8, name: "Altitude" },
-    { id: 9, name: "Air Quality" },
-    { id: 10, name: "Signal" },
-    { id: 11, name: "Battery" },
+const parameters = [
+  { id: 'vibration', name: 'Vibration' },
+  { id: 'magneticflux', name: 'Magnetic Flux' },
+  { id: 'rpm', name: 'RPM' },
+  { id: 'acoustics', name: 'Acoustics' },
+  { id: 'temperature', name: 'Temperature' },
+  { id: 'humidity', name: 'Humidity' },
+  { id: 'pressure', name: 'Pressure' },
+  { id: 'altitude', name: 'Altitude' },
+  { id: 'airquality', name: 'Air Quality' },
+  { id: 'signal', name: 'Signal' },
+  { id: 'battery', name: 'Battery' },
 ];
 
-const Dropdown = () => {
-  const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState(people[1]);
+const Dropdown = memo(() => {
+  const { selectedParameter, setSelectedParameter } = useLineGraph();
+  const selected = parameters.find(p => p.id === selectedParameter);
 
-  const filteredPeople =
-    query === ""
-      ? people
-      : people.filter((person) => {
-          return person.name.toLowerCase().includes(query.toLowerCase());
-        });
+  const handleChange = useCallback((value) => {
+    setSelectedParameter(value);
+  }, [setSelectedParameter]);
 
   return (
-    <div className="w-full">
-      <Combobox
-        value={selected}
-        onChange={(value) => setSelected(value)}
-        onClose={() => setQuery("")}
-      >
-        <div className="relative">
-          <ComboboxInput
-            className={clsx(
-              "w-full rounded-lg border-none bg-white/5 py-1.5 pr-8 pl-3 text-sm/6 text-white",
-              "focus:not-data-focus:outline-none data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-white/25"
-            )}
-            displayValue={(person) => person?.name}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-          <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5">
-            <ChevronDownIcon className="size-4 fill-white/60 group-data-hover:fill-white" />
-          </ComboboxButton>
+    <div className="w-full max-w-xs">
+      <Listbox value={selectedParameter} onChange={handleChange}>
+        <div className="relative mt-1">
+          <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white/5 py-2 pl-3 pr-10 text-left text-white focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+            <span className="block truncate">{selected?.name}</span>
+            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+              ▼
+            </span>
+          </Listbox.Button>
+          <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-[#102d49] py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm z-50">
+            {parameters.map((parameter) => (
+              <Listbox.Option
+                key={parameter.id}
+                className={({ active }) =>
+                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                    active ? 'bg-white/10 text-white' : 'text-white/70'
+                  }`
+                }
+                value={parameter.id}
+              >
+                {({ selected }) => (
+                  <>
+                    <span className={`block truncate ${selected ? 'font-medium text-white' : 'font-normal'}`}>
+                      {parameter.name}
+                    </span>
+                    {selected ? (
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-white">
+                        ✓
+                      </span>
+                    ) : null}
+                  </>
+                )}
+              </Listbox.Option>
+            ))}
+          </Listbox.Options>
         </div>
-
-        <ComboboxOptions
-          anchor="bottom"
-          transition
-          className={clsx(
-            "w-(--input-width) rounded-xl border border-white/5 bg-gray-500 p-1 [--anchor-gap:--spacing(1)] empty:invisible",
-            "transition duration-100 ease-in data-leave:data-closed:opacity-0"
-          )}
-        >
-          {filteredPeople.map((person) => (
-            <ComboboxOption
-              key={person.id}
-              value={person}
-              className="group flex cursor-default items-center gap-2 rounded-lg px-3 py-1.5 select-none data-focus:bg-white/10"
-            >
-              <CheckIcon className="invisible size-4 fill-white group-data-selected:visible" />
-              <div className="text-sm/6 text-white">{person.name}</div>
-            </ComboboxOption>
-          ))}
-        </ComboboxOptions>
-      </Combobox>
+      </Listbox>
     </div>
   );
-};
+});
+
+Dropdown.displayName = 'Dropdown';
 
 export default Dropdown;

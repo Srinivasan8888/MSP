@@ -6,7 +6,7 @@ import createError from 'http-errors';
 import dotenv from 'dotenv';
 import AuthRoute from './API/Router/Auth.route.js';
 import InsertRoute from './API/Router/Insert.route.js';
-// import ApiRoute from './API/Router/Api.route.js';
+import ApiRoute from './API/Router/Api.route.js';
 // import AdminRoute from './API/Router/Admin.route.js'
 import './Helpers/init_mongodb.js';
 import { verifyAccessToken } from './Helpers/jwt_helper.js';
@@ -27,7 +27,7 @@ app.use(helmet());
 app.use(cors({
     // origin: [`http://34.100.168.176:3000`,  `http://locahost:3000`, ], // 
 //   origin: 'http://34.100.168.176:3000',
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: [
     'Content-Type', 
@@ -60,7 +60,7 @@ app.get('/', verifyAccessToken, async (req, res, next) => {
 
 app.use('/auth', AuthRoute);
 app.use('/api/v1', InsertRoute);
-// app.use('/api/v2', ApiRoute);
+app.use('/api/v2', ApiRoute);
 // app.use('/api/admin', AdminRoute);
 
 app.get('/health', (req, res) => {

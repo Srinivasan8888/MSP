@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useEffect } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,6 +10,7 @@ import {
   Legend
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { useLineGraph } from '../../Context/LineGraphContext';
 
 ChartJS.register(
   CategoryScale,
@@ -21,13 +22,28 @@ ChartJS.register(
   Legend
 );
 
-const LineGraph = () => {
+const LineGraph = memo(() => {
+  const { lineGraphData, loading, selectedParameter, fetchLineGraphData } = useLineGraph();
+
+  useEffect(() => {
+    fetchLineGraphData(selectedParameter);
+    const interval = setInterval(() => {
+      fetchLineGraphData(selectedParameter);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [selectedParameter, fetchLineGraphData]);
+
+  if (loading || !lineGraphData) {
+    return <div className="text-white">Loading...</div>;
+  }
+
+  const { chartData } = lineGraphData;
   const data = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+    labels: chartData.time,
     datasets: [
       {
-        label: 'Performance',
-        data: [65, 59, 80, 81, 56, 55, 40, 65, 59, 80],
+        label: selectedParameter.charAt(0).toUpperCase() + selectedParameter.slice(1),
+        data: chartData[selectedParameter],
         borderColor: 'rgb(75, 192, 192)',
         backgroundColor: 'rgba(75, 192, 192, 0.5)',
         tension: 0.4,
@@ -70,6 +86,8 @@ const LineGraph = () => {
       <Line data={data} options={options} />
     </div>
   );
-};
+});
+
+LineGraph.displayName = 'LineGraph';
 
 export default LineGraph; 
