@@ -1,4 +1,5 @@
 import mspModel from "../Models/msp.model.js";
+import ThresholdModel from "../Models/Threshold.model.js";
 
 export const dashboardApi = async (req, res) => {
   try {
@@ -6,6 +7,8 @@ export const dashboardApi = async (req, res) => {
 
     // Fetch last 8 entries for card data
     const recentData = await mspModel.find().sort({ createdAt: -1 }).limit(8);
+
+    const thresholddata = await ThresholdModel.find()
 
     const cardData = {
       vibration: recentData.map(item => parseFloat(item.vibration)),
@@ -29,6 +32,7 @@ export const dashboardApi = async (req, res) => {
       .select("-_id -createdAt -updatedAt -__v");
 
     let chartData = {};
+    let thresholdData = null;
 
     const validFields = [
       "vibration", "magneticflux", "rpm", "acoustics", "temperature",
@@ -46,12 +50,16 @@ export const dashboardApi = async (req, res) => {
         [parameter]: selectedData.map(item => parseFloat(item[parameter])),
         time: selectedData.map(item => item.TIME)
       };
+
+      // Get threshold data for the selected parameter
+      thresholdData = await ThresholdModel.find({ parameter: parameter });
     }
 
     res.status(200).json({
       cardData,
       allData,
       chartData,
+      thresholdData
     });
 
   } catch (error) {
@@ -100,6 +108,21 @@ export const chartDate = async (req, res) => {
   }
 };
 
+export const createThreshold = async (req, res) => {
+  const {minValue, maxValue, parameter } = req.query;
+  if(!minValue || !maxValue || !parameter) {
+    return res.status(400).json({message : "All of the parameter is required!"});
+  }
+
+  try {
+    const Thresholdvals = new ThresholdModel({
+
+    })
+  } catch (error) {
+    
+  }
+}
+
 export const chartLive = async (req, res) => {
   const { parameter } = req.query;
 
@@ -135,6 +158,7 @@ export const chartLive = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 
 export const ApiController = {
   dashboardApi,

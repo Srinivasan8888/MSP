@@ -1,37 +1,22 @@
-import React, { createContext, useState, useContext, useCallback, useMemo } from 'react';
+import React, { createContext, useState, useContext, useCallback, useMemo, useEffect } from 'react';
 
 const LineGraphContext = createContext();
 
 export const LineGraphProvider = ({ children }) => {
-  const [lineGraphData, setLineGraphData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [selectedParameter, setSelectedParameter] = useState('vibration');
+  const [selectedParameter, setSelectedParameter] = useState(() => {
+    // Initialize from localStorage if available, otherwise default to 'vibration'
+    return localStorage.getItem('selectedParameter') || 'vibration';
+  });
 
-  const fetchLineGraphData = useCallback(async (parameter) => {
-    try {
-      const response = await fetch(`http://localhost:4000/api/v2/getDashboard?parameter=${parameter}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch line graph data');
-      }
-      const data = await response.json();
-      setLineGraphData(data);
-      setError(null);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // Update localStorage when selectedParameter changes
+  useEffect(() => {
+    localStorage.setItem('selectedParameter', selectedParameter);
+  }, [selectedParameter]);
 
   const contextValue = useMemo(() => ({
-    lineGraphData,
-    loading,
-    error,
     selectedParameter,
-    setSelectedParameter,
-    fetchLineGraphData
-  }), [lineGraphData, loading, error, selectedParameter, fetchLineGraphData]);
+    setSelectedParameter
+  }), [selectedParameter]);
 
   return (
     <LineGraphContext.Provider value={contextValue}>

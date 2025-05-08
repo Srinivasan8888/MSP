@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,6 +11,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { useLineGraph } from '../../Context/LineGraphContext';
+import { useDashboard } from '../../Context/DashboardContext';
 
 ChartJS.register(
   CategoryScale,
@@ -23,21 +24,14 @@ ChartJS.register(
 );
 
 const LineGraph = memo(() => {
-  const { lineGraphData, loading, selectedParameter, fetchLineGraphData } = useLineGraph();
+  const { selectedParameter } = useLineGraph();
+  const { dashboardData, loading } = useDashboard();
 
-  useEffect(() => {
-    fetchLineGraphData(selectedParameter);
-    const interval = setInterval(() => {
-      fetchLineGraphData(selectedParameter);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [selectedParameter, fetchLineGraphData]);
-
-  if (loading || !lineGraphData) {
+  if (loading || !dashboardData) {
     return <div className="text-white">Loading...</div>;
   }
 
-  const { chartData } = lineGraphData;
+  const { chartData } = dashboardData;
   const data = {
     labels: chartData.time,
     datasets: [

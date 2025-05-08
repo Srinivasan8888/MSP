@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const MSPSchema = new Schema({
     id: {
         type: String,
-        required: false,
+        required: true,
     },
     vibration: {
         type: String,

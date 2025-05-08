@@ -1,4 +1,5 @@
 import MSPSchema from '../Models/msp.model.js'
+import ThresholdModel from '../Models/Threshold.model.js';
 
 export const createMsp = async (req, res) => {
   const {
@@ -64,3 +65,60 @@ export const createMsp = async (req, res) => {
     res.status(500).json({ error: "Failed to save sensor data." });
   }
 };
+
+export const createThreshold = async (req, res) => {
+  const {parameter, minValue, maxValue, id} = req.query;
+
+  if(!parameter || !minValue || !maxValue || !id){
+    return res.status(400).json({message: 'All the fields are required!!!'})
+  }
+
+  // Validate numeric values
+  const min = Number(minValue);
+  const max = Number(maxValue);
+  
+  if (isNaN(min) || isNaN(max)) {
+    return res.status(400).json({message: 'minValue and maxValue must be valid numbers'});
+  }
+
+  try {
+    // Check if threshold already exists for this parameter
+    const existingThreshold = await ThresholdModel.findOne({ parameter: String(parameter) });
+
+    if (existingThreshold) {
+      // Update existing threshold
+      existingThreshold.minValue = min;
+      existingThreshold.maxValue = max;
+      existingThreshold.id = id;
+      
+      const updatedThreshold = await existingThreshold.save();
+      res.status(200).json({
+        message: "Threshold values updated successfully",
+        data: updatedThreshold
+      });
+    } else {
+      // Create new threshold
+      const saveThreshold = ThresholdModel({
+        id,
+        parameter: String(parameter),
+        minValue: min,
+        maxValue: max
+      });
+
+      const savedThreshold = await saveThreshold.save();
+      res.status(201).json({
+        message: "New threshold values created successfully",
+        data: savedThreshold
+      });
+    }
+  } catch (error) {
+    console.error("Error saving threshold data:", error);
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ error: 'Validation error: ' + error.message });
+    }
+    if (error.code === 11000) {
+      return res.status(409).json({ error: 'Duplicate entry found' });
+    }
+    res.status(500).json({ error: 'Failed to save threshold data' });
+  }
+}

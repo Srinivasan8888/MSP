@@ -3,12 +3,19 @@ import React, { createContext, useState, useContext, useEffect, useCallback, use
 const DashboardContext = createContext();
 
 export const DashboardProvider = ({ children }) => {
-  const [selectedParameter, setSelectedParameter] = useState('vibration');
+  const [selectedParameter, setSelectedParameter] = useState(() => {
+    return localStorage.getItem('selectedParameter') || 'vibration';
+  });
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const intervalRef = useRef(null);
   const previousDataRef = useRef(null);
+
+  // Update localStorage when selectedParameter changes
+  useEffect(() => {
+    localStorage.setItem('selectedParameter', selectedParameter);
+  }, [selectedParameter]);
 
   const fetchDashboardData = useCallback(async (parameter) => {
     try {
@@ -18,7 +25,6 @@ export const DashboardProvider = ({ children }) => {
       }
       const data = await response.json();
       
-      // Only update state if data has changed
       if (JSON.stringify(data) !== JSON.stringify(previousDataRef.current)) {
         previousDataRef.current = data;
         setDashboardData(data);
@@ -32,21 +38,15 @@ export const DashboardProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    // Initial fetch
     setLoading(true);
     fetchDashboardData(selectedParameter);
-
-    // Clear any existing interval
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-
-    // Set up new interval
     intervalRef.current = setInterval(() => {
       fetchDashboardData(selectedParameter);
     }, 1000);
 
-    // Cleanup
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
