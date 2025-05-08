@@ -184,9 +184,12 @@ const DashboardContent = () => {
   const [currentSignal, setCurrentSignal] = useState(0);
 
   useEffect(() => {
-    if (dashboardData?.signalSeries && dashboardData.signalSeries.length > 0) {
-      // Get the most recent signal value
-      const latestSignal = dashboardData.signalSeries[0].signal;
+    if (loading || !dashboardData) return;
+
+    // Get signal data from signalSeries
+    if (dashboardData.signalSeries && dashboardData.signalSeries.length > 0) {
+      // Get the most recent signal value (last element in the array)
+      const latestSignal = dashboardData.signalSeries[dashboardData.signalSeries.length - 1].signal;
       setCurrentSignal(parseFloat(latestSignal));
       
       // Format the data for display
@@ -196,7 +199,11 @@ const DashboardContent = () => {
       }));
       setSignalData(formattedData);
     }
-  }, [dashboardData]);
+  }, [dashboardData, loading]);
+
+  if (loading) {
+    return <div className="text-white">Loading...</div>;
+  }
 
   return (
     <div className="h-screen overflow-x-scroll bg-[rgba(17,25,67,1)] p-2">
