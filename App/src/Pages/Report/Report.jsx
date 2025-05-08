@@ -2,16 +2,17 @@ import React, { Fragment, useState, useRef } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { ChevronUpIcon, ChevronDownIcon, CheckIcon } from '@heroicons/react/24/outline'
 import Dropdown from '../../Components/Dashboard/Dropdown'
-import { LineGraphProvider } from '../../Context/LineGraphContext'
+import { DashboardProvider, useParameter } from '../../Context/DashboardContext'
 import * as XLSX from 'xlsx'
 
-const Report = () => {
+const ReportContent = () => {
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const startDateInputRef = useRef(null)
   const endDateInputRef = useRef(null)
+  const { selectedParameter } = useParameter()
 
   const handleDateChange = (e) => {
     const { name, value } = e.target
@@ -33,7 +34,7 @@ const Report = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/v2/getChart?parameter=vibration&startdate=${startDate}&enddate=${endDate}`
+        `http://localhost:4000/api/v2/getChart?parameter=${selectedParameter}&startdate=${startDate}&enddate=${endDate}`
       )
 
       if (!response.ok) {
@@ -42,14 +43,14 @@ const Report = () => {
 
       const data = await response.json()
       
-      if (!data.chartData || !data.chartData.vibration || data.chartData.vibration.length === 0) {
+      if (!data.chartData || !data.chartData[selectedParameter] || data.chartData[selectedParameter].length === 0) {
         throw new Error('No data available for the selected date range')
       }
 
       // Prepare data for Excel
       const excelData = data.chartData.time.map((time, index) => ({
         Time: time,
-        Vibration: data.chartData.vibration[index]
+        [selectedParameter.charAt(0).toUpperCase() + selectedParameter.slice(1)]: data.chartData[selectedParameter][index]
       }))
 
       // Create worksheet
@@ -57,10 +58,10 @@ const Report = () => {
       
       // Create workbook
       const wb = XLSX.utils.book_new()
-      XLSX.utils.book_append_sheet(wb, ws, 'Vibration Data')
+      XLSX.utils.book_append_sheet(wb, ws, `${selectedParameter.charAt(0).toUpperCase() + selectedParameter.slice(1)} Data`)
 
       // Generate Excel file
-      XLSX.writeFile(wb, `vibration_data_${startDate}_to_${endDate}.xlsx`)
+      XLSX.writeFile(wb, `${selectedParameter}_data_${startDate}_to_${endDate}.xlsx`)
 
     } catch (err) {
       setError(err.message)
@@ -90,9 +91,7 @@ const Report = () => {
 
           <div className="space-y-6">
             <div className="flex justify-center">
-              <LineGraphProvider>
-                <Dropdown />
-              </LineGraphProvider>
+              <Dropdown />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -161,6 +160,14 @@ const Report = () => {
         </div>
       </div>
     </div>
+  )
+}
+
+const Report = () => {
+  return (
+    <DashboardProvider>
+      <ReportContent />
+    </DashboardProvider>
   )
 }
 

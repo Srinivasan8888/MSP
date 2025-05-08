@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect, useCallback, useMemo, useRef } from 'react';
 
 const DashboardContext = createContext();
+const ParameterContext = createContext();
 
 export const DashboardProvider = ({ children }) => {
   const [selectedParameter, setSelectedParameter] = useState(() => {
@@ -54,19 +55,24 @@ export const DashboardProvider = ({ children }) => {
     };
   }, [selectedParameter, fetchDashboardData]);
 
-  const contextValue = useMemo(() => ({
+  const parameterValue = useMemo(() => ({
     selectedParameter,
-    setSelectedParameter,
+    setSelectedParameter
+  }), [selectedParameter]);
+
+  const dashboardValue = useMemo(() => ({
     dashboardData,
     loading,
     error,
     fetchDashboardData
-  }), [selectedParameter, dashboardData, loading, error, fetchDashboardData]);
+  }), [dashboardData, loading, error, fetchDashboardData]);
 
   return (
-    <DashboardContext.Provider value={contextValue}>
-      {children}
-    </DashboardContext.Provider>
+    <ParameterContext.Provider value={parameterValue}>
+      <DashboardContext.Provider value={dashboardValue}>
+        {children}
+      </DashboardContext.Provider>
+    </ParameterContext.Provider>
   );
 };
 
@@ -74,6 +80,14 @@ export const useDashboard = () => {
   const context = useContext(DashboardContext);
   if (!context) {
     throw new Error('useDashboard must be used within a DashboardProvider');
+  }
+  return context;
+};
+
+export const useParameter = () => {
+  const context = useContext(ParameterContext);
+  if (!context) {
+    throw new Error('useParameter must be used within a DashboardProvider');
   }
   return context;
 }; 

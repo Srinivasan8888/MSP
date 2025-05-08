@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,8 +10,7 @@ import {
   Legend
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { useLineGraph } from '../../Context/LineGraphContext';
-import { useDashboard } from '../../Context/DashboardContext';
+import { useDashboard, useParameter } from '../../Context/DashboardContext';
 
 ChartJS.register(
   CategoryScale,
@@ -24,28 +23,30 @@ ChartJS.register(
 );
 
 const LineGraph = memo(() => {
-  const { selectedParameter } = useLineGraph();
   const { dashboardData, loading } = useDashboard();
+  const { selectedParameter } = useParameter();
 
-  if (loading || !dashboardData) {
-    return <div className="text-white">Loading...</div>;
-  }
+  const chartData = useMemo(() => {
+    if (loading || !dashboardData || !selectedParameter) return null;
 
-  const { chartData } = dashboardData;
-  const data = {
-    labels: chartData.time,
-    datasets: [
-      {
-        label: selectedParameter.charAt(0).toUpperCase() + selectedParameter.slice(1),
-        data: chartData[selectedParameter],
-        borderColor: 'rgb(75, 192, 192)',
-        backgroundColor: 'rgba(75, 192, 192, 0.5)',
-        tension: 0.4,
-      },
-    ],
-  };
+    const { chartData } = dashboardData;
+    if (!chartData || !chartData[selectedParameter]) return null;
 
-  const options = {
+    return {
+      labels: chartData.time,
+      datasets: [
+        {
+          label: selectedParameter.charAt(0).toUpperCase() + selectedParameter.slice(1),
+          data: chartData[selectedParameter],
+          borderColor: 'rgb(75, 192, 192)',
+          backgroundColor: 'rgba(75, 192, 192, 0.5)',
+          tension: 0.4,
+        },
+      ],
+    };
+  }, [dashboardData, loading, selectedParameter]);
+
+  const options = useMemo(() => ({
     responsive: true,
     plugins: {
       legend: {
@@ -73,11 +74,15 @@ const LineGraph = memo(() => {
         }
       }
     }
-  };
+  }), []);
+
+  if (loading || !dashboardData || !chartData || !selectedParameter) {
+    return <div className="text-white">Loading...</div>;
+  }
 
   return (
     <div className="w-full h-full p-4">
-      <Line data={data} options={options} />
+      <Line data={chartData} options={options} />
     </div>
   );
 });

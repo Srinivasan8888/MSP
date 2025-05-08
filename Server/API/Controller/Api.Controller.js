@@ -108,21 +108,6 @@ export const chartDate = async (req, res) => {
   }
 };
 
-export const createThreshold = async (req, res) => {
-  const {minValue, maxValue, parameter } = req.query;
-  if(!minValue || !maxValue || !parameter) {
-    return res.status(400).json({message : "All of the parameter is required!"});
-  }
-
-  try {
-    const Thresholdvals = new ThresholdModel({
-
-    })
-  } catch (error) {
-    
-  }
-}
-
 export const chartLive = async (req, res) => {
   const { parameter } = req.query;
 
@@ -159,9 +144,20 @@ export const chartLive = async (req, res) => {
   }
 };
 
+export const getUniqueIds = async (req, res) => {
+  try {
+   
+    const uniqueIds = await mspModel.distinct("id");
+    res.status(200).json(uniqueIds);
+  } catch (error) {
+    console.error("Error fetching unique IDs:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 export const ApiController = {
   dashboardApi,
   chartDate,
-  chartLive
+  chartLive,
+  getUniqueIds
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef,  } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Dropdown from "../../Components/Dashboard/Dropdown";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -14,7 +14,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { Switch } from "@headlessui/react";
-import { LineGraphProvider, useLineGraph } from "../../Context/LineGraphContext";
+import { DashboardProvider, useParameter } from "../../Context/DashboardContext";
 
 ChartJS.register(
   CategoryScale,
@@ -33,7 +33,7 @@ const ChartContent = () => {
   const [chartData, setChartData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { selectedParameter } = useLineGraph();
+  const { selectedParameter } = useParameter();
   const previousDataRef = useRef(null);
   const chartRef = useRef(null);
   const dataPointCountRef = useRef(0);
@@ -336,9 +336,9 @@ const ChartContent = () => {
 
 const Chart = () => {
   return (
-    <LineGraphProvider>
+    <DashboardProvider>
       <ChartContent />
-    </LineGraphProvider>
+    </DashboardProvider>
   );
 };
 

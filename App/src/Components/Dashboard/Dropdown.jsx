@@ -1,6 +1,6 @@
 import React, { memo, useCallback } from 'react';
 import { Listbox } from '@headlessui/react';
-import { useLineGraph } from '../../Context/LineGraphContext';
+import { useParameter } from '../../Context/DashboardContext';
 
 const parameters = [
   { id: 'vibration', name: 'Vibration' },
@@ -17,7 +17,7 @@ const parameters = [
 ];
 
 const Dropdown = memo(() => {
-  const { selectedParameter, setSelectedParameter } = useLineGraph();
+  const { selectedParameter, setSelectedParameter } = useParameter();
   const selected = parameters.find(p => p.id === selectedParameter);
 
   const handleChange = useCallback((value) => {

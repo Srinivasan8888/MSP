@@ -12,7 +12,7 @@ def random_string(length=6):
 # Function to generate random sensor data
 def generate_sensor_data():
     return {
-        "id": '2501',
+        "id": '2502',
         "vibration": round(random.uniform(0.1, 5.0), 2),
         "magneticflux": random.randint(300, 500),
         "rpm": random.randint(1000, 2000),

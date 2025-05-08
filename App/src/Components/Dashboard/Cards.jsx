@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, memo, useMemo } from "react";
+import React, { useEffect, useRef, memo, useMemo, useCallback } from "react";
 import Chart from "chart.js/auto";
 import {
   Activity,
@@ -139,13 +139,14 @@ Card.displayName = 'Card';
 const Cards = memo(() => {
   const { dashboardData, loading } = useDashboard();
 
-  if (loading || !dashboardData) {
-    return <div className="text-white">Loading...</div>;
-  }
+  const cardData = useMemo(() => {
+    if (loading || !dashboardData) return null;
+    return dashboardData.cardData;
+  }, [dashboardData, loading]);
 
-  const { cardData } = dashboardData;
-  const getLatestValue = (data) => data[0];
-  const getChange = (data) => {
+  const getLatestValue = useCallback((data) => data[0], []);
+  
+  const getChange = useCallback((data) => {
     const latest = data[0];
     const previous = data[1];
     const change = ((latest - previous) / previous) * 100;
@@ -153,140 +154,148 @@ const Cards = memo(() => {
       text: `${change >= 0 ? '▲' : '▼'} ${Math.abs(change).toFixed(1)}%`,
       color: change >= 0 ? 'text-green-500' : 'text-red-500'
     };
-  };
+  }, []);
 
-  const cardsData = useMemo(() => [
-    {
-      title: "Vibration",
-      unit: "mm/s",
-      value: getLatestValue(cardData.vibration),
-      icon: <Activity size={24} />,
-      chartData: {
-        labels: cardData.time,
-        data: cardData.vibration,
+  const cardsData = useMemo(() => {
+    if (!cardData) return [];
+    
+    return [
+      {
+        title: "Vibration",
+        unit: "mm/s",
+        value: getLatestValue(cardData.vibration),
+        icon: <Activity size={24} />,
+        chartData: {
+          labels: cardData.time,
+          data: cardData.vibration,
+        },
+        borderColor: "rgba(101, 116, 205, 0.8)",
+        backgroundColor: "rgba(101, 116, 205, 0.1)",
+        change: getChange(cardData.vibration),
       },
-      borderColor: "rgba(101, 116, 205, 0.8)",
-      backgroundColor: "rgba(101, 116, 205, 0.1)",
-      change: getChange(cardData.vibration),
-    },
-    {
-      title: "Magneticflux",
-      unit: "Gauss",
-      value: getLatestValue(cardData.magneticflux),
-      icon: <Gauge size={24} />,
-      chartData: {
-        labels: cardData.time,
-        data: cardData.magneticflux,
+      {
+        title: "Magneticflux",
+        unit: "Gauss",
+        value: getLatestValue(cardData.magneticflux),
+        icon: <Gauge size={24} />,
+        chartData: {
+          labels: cardData.time,
+          data: cardData.magneticflux,
+        },
+        borderColor: "rgba(246, 109, 155, 0.8)",
+        backgroundColor: "rgba(246, 109, 155, 0.1)",
+        change: getChange(cardData.magneticflux),
       },
-      borderColor: "rgba(246, 109, 155, 0.8)",
-      backgroundColor: "rgba(246, 109, 155, 0.1)",
-      change: getChange(cardData.magneticflux),
-    },
-    {
-      title: "RPM",
-      unit: "RPM",
-      value: getLatestValue(cardData.rpm),
-      icon: <Radio size={24} />,
-      chartData: {
-        labels: cardData.time,
-        data: cardData.rpm,
+      {
+        title: "RPM",
+        unit: "RPM",
+        value: getLatestValue(cardData.rpm),
+        icon: <Radio size={24} />,
+        chartData: {
+          labels: cardData.time,
+          data: cardData.rpm,
+        },
+        borderColor: "rgba(246, 153, 63, 0.8)",
+        backgroundColor: "rgba(246, 153, 63, 0.1)",
+        change: getChange(cardData.rpm),
       },
-      borderColor: "rgba(246, 153, 63, 0.8)",
-      backgroundColor: "rgba(246, 153, 63, 0.1)",
-      change: getChange(cardData.rpm),
-    },
-    {
-      title: "Acoustics",
-      unit: "dB",
-      value: getLatestValue(cardData.acoustics),
-      icon: <Volume2 size={24} />,
-      chartData: {
-        labels: cardData.time,
-        data: cardData.acoustics,
+      {
+        title: "Acoustics",
+        unit: "dB",
+        value: getLatestValue(cardData.acoustics),
+        icon: <Volume2 size={24} />,
+        chartData: {
+          labels: cardData.time,
+          data: cardData.acoustics,
+        },
+        borderColor: "rgba(75, 192, 192, 0.8)",
+        backgroundColor: "rgba(75, 192, 192, 0.1)",
+        change: getChange(cardData.acoustics),
       },
-      borderColor: "rgba(75, 192, 192, 0.8)",
-      backgroundColor: "rgba(75, 192, 192, 0.1)",
-      change: getChange(cardData.acoustics),
-    },
-    {
-      title: "Temperature",
-      unit: "°C",
-      value: getLatestValue(cardData.temperature),
-      icon: <Thermometer size={24} />,
-      chartData: {
-        labels: cardData.time,
-        data: cardData.temperature,
+      {
+        title: "Temperature",
+        unit: "°C",
+        value: getLatestValue(cardData.temperature),
+        icon: <Thermometer size={24} />,
+        chartData: {
+          labels: cardData.time,
+          data: cardData.temperature,
+        },
+        borderColor: "rgba(255, 99, 132, 0.8)",
+        backgroundColor: "rgba(255, 99, 132, 0.1)",
+        change: getChange(cardData.temperature),
       },
-      borderColor: "rgba(255, 99, 132, 0.8)",
-      backgroundColor: "rgba(255, 99, 132, 0.1)",
-      change: getChange(cardData.temperature),
-    },
-    {
-      title: "Humidity",
-      unit: "% r.H.",
-      value: getLatestValue(cardData.humidity),
-      icon: <Droplet size={24} />,
-      chartData: {
-        labels: cardData.time,
-        data: cardData.humidity,
+      {
+        title: "Humidity",
+        unit: "% r.H.",
+        value: getLatestValue(cardData.humidity),
+        icon: <Droplet size={24} />,
+        chartData: {
+          labels: cardData.time,
+          data: cardData.humidity,
+        },
+        borderColor: "rgba(54, 162, 235, 0.8)",
+        backgroundColor: "rgba(54, 162, 235, 0.1)",
+        change: getChange(cardData.humidity),
       },
-      borderColor: "rgba(54, 162, 235, 0.8)",
-      backgroundColor: "rgba(54, 162, 235, 0.1)",
-      change: getChange(cardData.humidity),
-    },
-    {
-      title: "Pressure",
-      unit: "hPa",
-      value: getLatestValue(cardData.pressure),
-      icon: <Wind size={24} />,
-      chartData: {
-        labels: cardData.time,
-        data: cardData.pressure,
+      {
+        title: "Pressure",
+        unit: "hPa",
+        value: getLatestValue(cardData.pressure),
+        icon: <Wind size={24} />,
+        chartData: {
+          labels: cardData.time,
+          data: cardData.pressure,
+        },
+        borderColor: "rgba(153, 102, 255, 0.8)",
+        backgroundColor: "rgba(153, 102, 255, 0.1)",
+        change: getChange(cardData.pressure),
       },
-      borderColor: "rgba(153, 102, 255, 0.8)",
-      backgroundColor: "rgba(153, 102, 255, 0.1)",
-      change: getChange(cardData.pressure),
-    },
-    {
-      title: "Altitude",
-      unit: "m",
-      value: getLatestValue(cardData.altitude),
-      icon: <Mountain size={24} />,
-      chartData: {
-        labels: cardData.time,
-        data: cardData.altitude,
+      {
+        title: "Altitude",
+        unit: "m",
+        value: getLatestValue(cardData.altitude),
+        icon: <Mountain size={24} />,
+        chartData: {
+          labels: cardData.time,
+          data: cardData.altitude,
+        },
+        borderColor: "rgba(255, 206, 86, 0.8)",
+        backgroundColor: "rgba(255, 206, 86, 0.1)",
+        change: getChange(cardData.altitude),
       },
-      borderColor: "rgba(255, 206, 86, 0.8)",
-      backgroundColor: "rgba(255, 206, 86, 0.1)",
-      change: getChange(cardData.altitude),
-    },
-    {
-      title: "Air Quality",
-      unit: "ppm",
-      value: getLatestValue(cardData.airquality),
-      icon: <Airplay size={24} />,
-      chartData: {
-        labels: cardData.time,
-        data: cardData.airquality,
+      {
+        title: "Air Quality",
+        unit: "ppm",
+        value: getLatestValue(cardData.airquality),
+        icon: <Airplay size={24} />,
+        chartData: {
+          labels: cardData.time,
+          data: cardData.airquality,
+        },
+        borderColor: "rgba(199, 199, 86, 0.8)",
+        backgroundColor: "rgba(199, 199, 86, 0.1)",
+        change: getChange(cardData.airquality),
       },
-      borderColor: "rgba(199, 199, 86, 0.8)",
-      backgroundColor: "rgba(199, 199, 86, 0.1)",
-      change: getChange(cardData.airquality),
-    },
-    {
-      title: "Signal",
-      unit: "dBm",
-      value: getLatestValue(cardData.signal),
-      icon: <Signal size={24} />,
-      chartData: {
-        labels: cardData.time,
-        data: cardData.signal,
+      {
+        title: "Signal",
+        unit: "dBm",
+        value: getLatestValue(cardData.signal),
+        icon: <Signal size={24} />,
+        chartData: {
+          labels: cardData.time,
+          data: cardData.signal,
+        },
+        borderColor: "rgba(246, 109, 155, 0.8)",
+        backgroundColor: "rgba(246, 109, 155, 0.1)",
+        change: getChange(cardData.signal),
       },
-      borderColor: "rgba(246, 109, 155, 0.8)",
-      backgroundColor: "rgba(246, 109, 155, 0.1)",
-      change: getChange(cardData.signal),
-    },
-  ], [cardData]);
+    ];
+  }, [cardData, getLatestValue, getChange]);
+
+  if (loading || !dashboardData || !cardData) {
+    return <div className="text-white">Loading...</div>;
+  }
 
   return (
     <div className="-mx-2 lg:flex lg:flex-wrap md:grid md:grid-cols-2">

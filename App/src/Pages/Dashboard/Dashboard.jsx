@@ -8,7 +8,6 @@ import clsx from "clsx";
 import Dropdown from "../../Components/Dashboard/Dropdown";
 import { GaugeComponent } from "react-gauge-component";
 import { DashboardProvider, useDashboard } from "../../Context/DashboardContext";
-import { LineGraphProvider, useLineGraph } from "../../Context/LineGraphContext";
 
 const people = [
   { id: 1, name: "Tom Cook" },
@@ -59,7 +58,6 @@ SignalStrength.displayName = 'SignalStrength';
 
 const ThresholdForm = memo(() => {
   const { dashboardData } = useDashboard();
-  const { selectedParameter } = useLineGraph();
   const [minValue, setMinValue] = useState('');
   const [maxValue, setMaxValue] = useState('');
   const [loading, setLoading] = useState(false);
@@ -74,7 +72,7 @@ const ThresholdForm = memo(() => {
       setMinValue('');
       setMaxValue('');
     }
-  }, [dashboardData?.thresholdData, selectedParameter]);
+  }, [dashboardData?.thresholdData]);
 
   const handleSubmit = async () => {
     if (!minValue || !maxValue) {
@@ -84,7 +82,7 @@ const ThresholdForm = memo(() => {
 
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:4000/api/v1/createThreshold?id=1401&parameter=${selectedParameter}&minValue=${minValue}&maxValue=${maxValue}`, {
+      const response = await fetch(`http://localhost:4000/api/v1/createThreshold?id=1401&minValue=${minValue}&maxValue=${maxValue}`, {
         method: 'POST',
       });
 
@@ -161,6 +159,17 @@ const ThresholdForm = memo(() => {
 
 ThresholdForm.displayName = 'ThresholdForm';
 
+const ChartSection = memo(() => {
+  return (
+    <div className="text-white h-[250px] xl:h-[95%] xl:w-[40%] bg-white/5 border border-gray-400 rounded-2xl m-2 flex flex-col items-center">
+      <Dropdown />
+      <LineGraph />
+    </div>
+  );
+});
+
+ChartSection.displayName = 'ChartSection';
+
 const Dashboard = () => {
   const [signalData, setSignalData] = useState([]);
 
@@ -186,68 +195,63 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <LineGraphProvider>
-      <DashboardProvider>
-        <div className="h-screen overflow-x-scroll bg-[rgba(17,25,67,1)] p-2">
-          <div className="xl:h-[50%] flex flex-col xl:flex-row  ">
-            <div className="text-white w-[100%]   xl:w-[60%] md:h-full px-5 py-5 mx-auto ">
-              <Cards />
-              <div className="text-white grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 xl:grid-cols-6 gap-4 border border-gray-400 rounded-2xl">
-                <Gauge />
-              </div>
-            </div>
-            <div className="text-white h-[250px] xl:h-[95%] xl:w-[40%]   bg-white/5 border border-gray-400 rounded-2xl m-2 flex flex-col items-center">
-              <Dropdown />
-              <LineGraph />
+    <DashboardProvider>
+      <div className="h-screen overflow-x-scroll bg-[rgba(17,25,67,1)] p-2">
+        <div className="xl:h-[50%] flex flex-col xl:flex-row">
+          <div className="text-white w-[100%] xl:w-[60%] md:h-full px-5 py-5 mx-auto">
+            <Cards />
+            <div className="text-white grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 xl:grid-cols-6 gap-4 border border-gray-400 rounded-2xl">
+              <Gauge />
             </div>
           </div>
-          <div className="xl:h-[50%] flex flex-col xl:flex-row bg-[rgba(17,25,67,1)]">
-            <div className="h-[800px] w-[360px] md:h-full md:w-full xl:h-[75%] 2xl:h-[83%] xl:w-[60%] text-black overflow-x-auto overflow-y-auto pl-2 mt-2 pr-3 xl:pr-4.5 mx-auto">
-              <Table />
-            </div>
+          <ChartSection />
+        </div>
+        <div className="xl:h-[50%] flex flex-col xl:flex-row bg-[rgba(17,25,67,1)]">
+          <div className="h-[800px] w-[360px] md:h-full md:w-full xl:h-[75%] 2xl:h-[83%] xl:w-[60%] text-black overflow-x-auto overflow-y-auto pl-2 mt-2 pr-3 xl:pr-4.5 mx-auto">
+            <Table />
+          </div>
 
-            <div className="xl:w-[40.9%] h-full xl:h-[86.99%] text-white flex flex-col xl:flex-row gap-2 px-2 py-1.5">
-              <ThresholdForm />
+          <div className="xl:w-[40.9%] h-full xl:h-[86.99%] text-white flex flex-col xl:flex-row gap-2 px-2 py-1.5">
+            <ThresholdForm />
 
-              <div className="w-full flex flex-col bg-white/5  p-4 h-[730px] xl:h-[100%] border border-gray-400 rounded-2xl">
-                <div className="flex flex-col items-center justify-center  h-[100%]">
-                  <div>Signal Strength</div>
-                  <div className="2xl:w-[120px] xl:w-[120px] h-[35%] ">
-                    <GaugeComponent
-                      value={50}
-                      type="radial"
-                      labels={{
-                        tickLabels: {
-                          type: "outer",
-                          ticks: [
-                            { value: 20 },
-                            { value: 40 },
-                            { value: 60 },
-                            { value: 80 },
-                            { value: 100 },
-                          ],
-                        },
-                      }}
-                      arc={{
-                        colorArray: ["#5BE12C", "#EA4228"],
-                        subArcs: [{ limit: 10 }, { limit: 30 }, {}, {}, {}],
-                        padding: 0.02,
-                        width: 0.3,
-                      }}
-                      pointer={{
-                        elastic: true,
-                        animationDelay: 0,
-                      }}
-                    />
-                  </div>
-                  <SignalStrength signalData={signalData} />
+            <div className="w-full flex flex-col bg-white/5 p-4 h-[730px] xl:h-[100%] border border-gray-400 rounded-2xl">
+              <div className="flex flex-col items-center justify-center h-[100%]">
+                <div>Signal Strength</div>
+                <div className="2xl:w-[120px] xl:w-[120px] h-[35%]">
+                  <GaugeComponent
+                    value={50}
+                    type="radial"
+                    labels={{
+                      tickLabels: {
+                        type: "outer",
+                        ticks: [
+                          { value: 20 },
+                          { value: 40 },
+                          { value: 60 },
+                          { value: 80 },
+                          { value: 100 },
+                        ],
+                      },
+                    }}
+                    arc={{
+                      colorArray: ["#5BE12C", "#EA4228"],
+                      subArcs: [{ limit: 10 }, { limit: 30 }, {}, {}, {}],
+                      padding: 0.02,
+                      width: 0.3,
+                    }}
+                    pointer={{
+                      elastic: true,
+                      animationDelay: 0,
+                    }}
+                  />
                 </div>
+                <SignalStrength signalData={signalData} />
               </div>
             </div>
           </div>
         </div>
-      </DashboardProvider>
-    </LineGraphProvider>
+      </div>
+    </DashboardProvider>
   );
 };
 
