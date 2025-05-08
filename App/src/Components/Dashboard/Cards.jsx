@@ -308,7 +308,7 @@ const Cards = memo(() => {
       <div className="w-full xl:w-1/6 px-3 mb-4 h-[152px] lg:h-[120px] xl:h-[90px] 2xl:h-28">
         <div className="rounded-lg bg-[#102d49] shadow-lg md:shadow-xl relative overflow-hidden h-full flex flex-col justify-between">
           <div className="px-3 xl:pt-3 pt-8 pb-10 text-center relative z-10">
-            <h4 className="text-xs xl:text-sm uppercase text-white leading-tight">
+            <h4 className="text-xs font-thin 2xl:text-sm xl:uppercase text-white flex items-center justify-center gap-1">
               Battery
             </h4>
             <div className="w-48 my-3 ml-28 lg:ml-0 2xl:ml-6">
@@ -331,14 +331,14 @@ const Cards = memo(() => {
       <div className="w-full xl:w-1/6 px-3 mb-4 h-[152px] lg:h-[120px] xl:h-[90px] 2xl:h-28">
         <div className="rounded-lg bg-[#102d49] shadow-lg md:shadow-xl relative overflow-hidden h-full flex flex-col justify-between">
           <div className="px-3 xl:pt-3 pt-8 pb-10 text-center relative z-10">
-            <p className="text-xs xl:text-sm uppercase text-white leading-tight">
+            <p className="text-xs font-thin 2xl:text-sm xl:uppercase text-white flex items-center justify-center gap-1">
               System Status
             </p>
             <div className="flex items-center justify-center gap-2 mt-2">
               <span className="inline-block w-3 h-3 rounded-full bg-green-500"></span>
-              <span className="text-sm xl:text-lg text-white">Online</span>
+              <span className="text-sm xl:text-sm text-white">Online</span>
             </div>
-            <p className="text-base xl:text-medium text-white mt-1">
+            <p className="text-base xl:text-sm text-white mt-1">
               {getLatestValue(cardData.time)}
             </p>
           </div>

@@ -8,6 +8,7 @@ import clsx from "clsx";
 import Dropdown from "../../Components/Dashboard/Dropdown";
 import { GaugeComponent } from "react-gauge-component";
 import { DashboardProvider, useDashboard } from "../../Context/DashboardContext";
+import Signal from "../../Components/Dashboard/Signal";
 
 const people = [
   { id: 1, name: "Tom Cook" },
@@ -38,16 +39,20 @@ const SignalStrength = memo(({ signalData }) => (
     {signalData.map((data, index) => (
       <div
         key={index}
-        className="w-16 h-16 bg-[rgba(19,38,58,1)] rounded-lg border border-white/20 hover:bg-white/20 transition-colors duration-200 flex flex-col items-center justify-center"
+        className="w-18 h-18 bg-[rgba(19,38,58,1)] rounded-lg border border-white/20 hover:bg-white/20 transition-colors duration-200 flex flex-col items-center justify-center"
       >
         <div className={`text-2xl ${getSignalColor(data.strength)}`}>
-          {getSignalIcon(data.strength)}
+          <Signal signal={data.strength} height="35px" width="4px" />
         </div>
-        <div className="text-xs text-white mt-1">
-          {data.time.getHours()}:00
+        <div className="text-xs text-white">
+          {data.time.toLocaleTimeString('en-US', { 
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true 
+          })}
         </div>
         <div className="text-xs text-white/70">
-          {data.strength}%
+          {data.strength.toFixed(1)} dBm
         </div>
       </div>
     ))}
@@ -80,9 +85,10 @@ const ThresholdForm = memo(() => {
       return;
     }
 
+    const parameter = localStorage.getItem('selectedParameter') || 'vibration';
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:4000/api/v1/createThreshold?id=1401&minValue=${minValue}&maxValue=${maxValue}`, {
+      const response = await fetch(`http://localhost:4000/api/v1/createThreshold?id=1401&minValue=${minValue}&maxValue=${maxValue}&parameter=${parameter}`, {
         method: 'POST',
       });
 
@@ -162,7 +168,9 @@ ThresholdForm.displayName = 'ThresholdForm';
 const ChartSection = memo(() => {
   return (
     <div className="text-white h-[250px] xl:h-[95%] xl:w-[40%] bg-white/5 border border-gray-400 rounded-2xl m-2 flex flex-col items-center">
-      <Dropdown />
+     <div className="flex w-[40%]">
+     <span className="text-[13px]">Select Parameter:</span> <Dropdown />
+     </div>
       <LineGraph />
     </div>
   );
@@ -170,87 +178,65 @@ const ChartSection = memo(() => {
 
 ChartSection.displayName = 'ChartSection';
 
-const Dashboard = () => {
+const DashboardContent = () => {
+  const { dashboardData, loading } = useDashboard();
   const [signalData, setSignalData] = useState([]);
+  const [currentSignal, setCurrentSignal] = useState(0);
 
   useEffect(() => {
-    // Generate random signal data for the last 12 hours
-    const generateSignalData = () => {
-      const now = new Date();
-      const data = Array.from({ length: 8 }, (_, i) => {
-        const hour = new Date(now);
-        hour.setHours(now.getHours() - i);
-        return {
-          time: hour,
-          strength: Math.floor(Math.random() * 100),
-        };
-      }).reverse();
-      setSignalData(data);
-    };
-
-    generateSignalData();
-    // Update every 5 minutes
-    const interval = setInterval(generateSignalData, 300000);
-    return () => clearInterval(interval);
-  }, []);
+    if (dashboardData?.signalSeries && dashboardData.signalSeries.length > 0) {
+      // Get the most recent signal value
+      const latestSignal = dashboardData.signalSeries[0].signal;
+      setCurrentSignal(parseFloat(latestSignal));
+      
+      // Format the data for display
+      const formattedData = dashboardData.signalSeries.map(item => ({
+        time: new Date(item.timestamp),
+        strength: parseFloat(item.signal)
+      }));
+      setSignalData(formattedData);
+    }
+  }, [dashboardData]);
 
   return (
-    <DashboardProvider>
-      <div className="h-screen overflow-x-scroll bg-[rgba(17,25,67,1)] p-2">
-        <div className="xl:h-[50%] flex flex-col xl:flex-row">
-          <div className="text-white w-[100%] xl:w-[60%] md:h-full px-5 py-5 mx-auto">
-            <Cards />
-            <div className="text-white grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 xl:grid-cols-6 gap-4 border border-gray-400 rounded-2xl">
-              <Gauge />
-            </div>
+    <div className="h-screen overflow-x-scroll bg-[rgba(17,25,67,1)] p-2">
+      <div className="xl:h-[50%] flex flex-col xl:flex-row">
+        <div className="text-white w-[100%] xl:w-[60%] md:h-full px-5 py-5 mx-auto">
+          <Cards />
+          <div className="text-white grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 xl:grid-cols-6 gap-4 border border-gray-400 rounded-2xl">
+            <Gauge />
           </div>
-          <ChartSection />
         </div>
-        <div className="xl:h-[50%] flex flex-col xl:flex-row bg-[rgba(17,25,67,1)]">
-          <div className="h-[800px] w-[360px] md:h-full md:w-full xl:h-[75%] 2xl:h-[83%] xl:w-[60%] text-black overflow-x-auto overflow-y-auto pl-2 mt-2 pr-3 xl:pr-4.5 mx-auto">
-            <Table />
-          </div>
+        <ChartSection />
+      </div>
+      <div className="xl:h-[50%] flex flex-col xl:flex-row bg-[rgba(17,25,67,1)]">
+        <div className="h-[800px] w-[360px] md:h-full md:w-full xl:h-[75%] 2xl:h-[83%] xl:w-[60%] text-black overflow-x-auto overflow-y-auto pl-2 mt-2 pr-3 xl:pr-4.5 mx-auto">
+          <Table />
+        </div>
 
-          <div className="xl:w-[40.9%] h-full xl:h-[86.99%] text-white flex flex-col xl:flex-row gap-2 px-2 py-1.5">
-            <ThresholdForm />
+        <div className="xl:w-[40.9%] h-full xl:h-[86.99%] text-white flex flex-col xl:flex-row gap-2 px-2 py-1.5">
+          <ThresholdForm />
 
-            <div className="w-full flex flex-col bg-white/5 p-4 h-[730px] xl:h-[100%] border border-gray-400 rounded-2xl">
-              <div className="flex flex-col items-center justify-center h-[100%]">
-                <div>Signal Strength</div>
-                <div className="2xl:w-[120px] xl:w-[120px] h-[35%]">
-                  <GaugeComponent
-                    value={50}
-                    type="radial"
-                    labels={{
-                      tickLabels: {
-                        type: "outer",
-                        ticks: [
-                          { value: 20 },
-                          { value: 40 },
-                          { value: 60 },
-                          { value: 80 },
-                          { value: 100 },
-                        ],
-                      },
-                    }}
-                    arc={{
-                      colorArray: ["#5BE12C", "#EA4228"],
-                      subArcs: [{ limit: 10 }, { limit: 30 }, {}, {}, {}],
-                      padding: 0.02,
-                      width: 0.3,
-                    }}
-                    pointer={{
-                      elastic: true,
-                      animationDelay: 0,
-                    }}
-                  />
-                </div>
-                <SignalStrength signalData={signalData} />
+          <div className="w-full flex flex-col bg-white/5 p-4 h-[730px] xl:h-[100%] border border-gray-400 rounded-2xl">
+            <div className="flex flex-col items-center justify-center h-[100%]">
+              <div>Signal Strength</div>
+              <Signal signal={currentSignal} height="60px" width="10px" />
+              <div className="text-white text-lg mt-2">
+                {currentSignal.toFixed(1)} dBm
               </div>
+              <SignalStrength signalData={signalData} />
             </div>
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+const Dashboard = () => {
+  return (
+    <DashboardProvider>
+      <DashboardContent />
     </DashboardProvider>
   );
 };

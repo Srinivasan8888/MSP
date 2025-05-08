@@ -237,8 +237,8 @@ const ChartContent = () => {
     <div className="h-screen bg-[rgba(17,25,67,1)] p-4">
       <div className="xl:h-[95%] flex flex-col">
         <div className="flex items-center justify-evenly gap-4 p-4 border rounded-2xl border-gray-400 ">
-          <div>
-            <label className="text-white text-sm mb-1">Select Parameter</label>
+          <div className="w-56">
+            <label className="text-white text-sm mb-1 ">Select Parameter</label>
             <Dropdown />
           </div>
 
