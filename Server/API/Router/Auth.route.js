@@ -10,18 +10,10 @@ router.post('/refresh-token', refreshToken)
 router.delete('/logout', logout)
 router.post('/get-role', getRole)
 
-
 //JWT Helper
 router.get('/access-token', verifyAccessToken, verifyToken);
 
 router.post('/access-token-generate', refreshAccessToken);
-
-// router.get('/verify-refresh-token', verifyRefreshToken, (req, res) => {
-//   res.json({ 
-//     success: true,
-//     accessToken: req.accessToken
-//   });
-// });
 
 router.get('/verify', verifyAccessToken, (req, res) => {
   res.json({ 
@@ -31,3 +23,12 @@ router.get('/verify', verifyAccessToken, (req, res) => {
 });
 
 export default router;
+
+
+
+// router.get('/verify-refresh-token', verifyRefreshToken, (req, res) => {
+//   res.json({ 
+//     success: true,
+//     accessToken: req.accessToken
+//   });
+// });

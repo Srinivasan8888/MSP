@@ -9,22 +9,8 @@ import Dropdown from "../../Components/Dashboard/Dropdown";
 import { GaugeComponent } from "react-gauge-component";
 import { DashboardProvider, useDashboard } from "../../Context/DashboardContext";
 import Signal from "../../Components/Dashboard/Signal";
+import API from "../../Layout/Axios/AxiosInterceptor";
 
-const people = [
-  { id: 1, name: "Tom Cook" },
-  { id: 2, name: "Wade Cooper" },
-  { id: 3, name: "Tanya Fox" },
-  { id: 4, name: "Arlene Mccoy" },
-  { id: 5, name: "Devon Webb" },
-];
-
-const getSignalIcon = (strength) => {
-  if (strength >= 80) return "📶"; // Strong signal
-  if (strength >= 60) return "📶"; // Good signal
-  if (strength >= 40) return "📶"; // Fair signal
-  if (strength >= 20) return "📶"; // Weak signal
-  return "📶"; // Very weak signal
-};
 
 const getSignalColor = (strength) => {
   if (strength >= 80) return "text-green-500";
@@ -86,10 +72,13 @@ const ThresholdForm = memo(() => {
     }
 
     const parameter = localStorage.getItem('selectedParameter') || 'vibration';
+    const id = localStorage.getItem('id');
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:4000/api/v1/createThreshold?id=1401&minValue=${minValue}&maxValue=${maxValue}&parameter=${parameter}`, {
-        method: 'POST',
+      // const response = await API.post(`/api/v1/createThreshold?id=1401&minValue=${minValue}&maxValue=${maxValue}&parameter=${parameter}`, {
+        const response = await fetch(`http://localhost:4000/api/v1/createThreshold?id=${id}&minValue=${minValue}&maxValue=${maxValue}&parameter=${parameter}`, {
+ 
+      method: 'POST',
       });
 
       if (!response.ok) {
@@ -115,7 +104,7 @@ const ThresholdForm = memo(() => {
         Set Threshold Limit
       </div>
 
-      <div className="mx-auto flex flex-col justify-center w-full max-w-md px-4 mt-4">
+      <div className="flex flex-col justify-center w-full max-w-md px-4 mx-auto mt-4">
         <Field>
           <Description className="text-sm/6 text-white/50">
             Enter Minimum Threshold
@@ -131,7 +120,7 @@ const ThresholdForm = memo(() => {
         </Field>
       </div>
 
-      <div className="mx-auto flex flex-col justify-center w-full max-w-md px-4 mt-4">
+      <div className="flex flex-col justify-center w-full max-w-md px-4 mx-auto mt-4">
         <Field>
           <Description className="text-sm/6 text-white/50">
             Enter Maximum Threshold
@@ -147,7 +136,7 @@ const ThresholdForm = memo(() => {
         </Field>
       </div>
 
-      <div className="flex items-center justify-center mt-6 px-4">
+      <div className="flex items-center justify-center px-4 mt-6">
         <Button 
           onClick={handleSubmit}
           disabled={loading}
@@ -210,7 +199,7 @@ const DashboardContent = () => {
       <div className="xl:h-[50%] flex flex-col xl:flex-row">
         <div className="text-white w-[100%] xl:w-[60%] md:h-full px-5 py-5 mx-auto">
           <Cards />
-          <div className="text-white grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 xl:grid-cols-6 gap-4 border border-gray-400 rounded-2xl">
+          <div className="grid grid-cols-2 gap-4 text-white border border-gray-400 sm:grid-cols-3 lg:grid-cols-6 xl:grid-cols-6 rounded-2xl">
             <Gauge />
           </div>
         </div>
@@ -228,7 +217,7 @@ const DashboardContent = () => {
             <div className="flex flex-col items-center justify-center h-[100%]">
               <div>Signal Strength</div>
               <Signal signal={currentSignal} height="60px" width="10px" />
-              <div className="text-white text-lg mt-2">
+              <div className="mt-2 text-lg text-white">
                 {currentSignal.toFixed(1)} dBm
               </div>
               <SignalStrength signalData={signalData} />

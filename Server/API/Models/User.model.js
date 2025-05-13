@@ -5,11 +5,7 @@ import bcrypt from "bcrypt";
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-    lowercase: true,
-  },
+ 
   email: {
     type: String,
     required: true,
@@ -17,20 +13,6 @@ const UserSchema = new Schema({
     unique: true,
   },
   password: {
-    type: String,
-    required: true,
-  },
-  phoneno: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  role: {
-    type: String,
-    required: true,
-    enum: ["admin", "user", "superadmin"],
-  },
-  empid: {
     type: String,
     required: true,
   },

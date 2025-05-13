@@ -7,13 +7,14 @@ import Chart from "./Pages/Chart/Chart";
 import Report from './Pages/Report/Report';
 import Settings from "./Pages/Settings/Settings";
 import Test from "./Pages/Test/Test";
-
+import Login from "./Pages/Login/Login";
 
 const App = () => {
   return (
     <div>
       <HashRouter>
         <Routes>
+          <Route path="/login" element={<Login />} />
           <Route path="/" element={<ProtectedRouter />}>
             <Route index element={<Dashboard />} />
             <Route path="chart" element={<Chart />} />

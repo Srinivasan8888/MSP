@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect, useCallback, use
 
 const DashboardContext = createContext();
 const ParameterContext = createContext();
+import API from '../Layout/Axios/AxiosInterceptor';
 
 export const DashboardProvider = ({ children }) => {
   const [selectedParameter, setSelectedParameter] = useState(() => {
@@ -16,11 +17,21 @@ export const DashboardProvider = ({ children }) => {
   // Update localStorage when selectedParameter changes
   useEffect(() => {
     localStorage.setItem('selectedParameter', selectedParameter);
+    const id = localStorage.getItem('id');
   }, [selectedParameter]);
 
   const fetchDashboardData = useCallback(async (parameter) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/v2/getDashboard?parameter=${parameter}`);
+      const id = localStorage.getItem('id');
+      const headers = {};
+      if (id) {
+        headers['x-user-id'] = id;
+      }
+      // const response = await API.get(`/api/v2/getDashboard?parameter=${parameter}`);
+      const response = await fetch(`http://localhost:4000/api/v2/getDashboard?parameter=${parameter}`, {
+        headers
+      });
+
       if (!response.ok) {
         throw new Error('Failed to fetch dashboard data');
       }

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: process.env.REACT_APP_SERVER_URL,
+  baseURL: import.meta.env.VITE_BACKEND_URL,
   withCredentials: true,
 });
 
@@ -14,7 +14,7 @@ API.interceptors.request.use(
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
     if (id) {
-      config.headers['X-User-ID'] = id;
+      config.headers['x-user-id'] = id;
     }
     return config;
   },
@@ -40,12 +40,12 @@ API.interceptors.response.use(
         if (!refreshToken) {
           console.error("Refresh token is missing.");
           localStorage.clear();
-          window.location.href = process.env.REACT_APP_LOGIN_URL || "/";
+          window.location.href = import.meta.env.VITE_LOGIN_URL || "login";
           return Promise.reject(error);
         }
 
         const { data } = await axios.post(
-          `${process.env.REACT_APP_SERVER_URL}/auth/refresh-token`,
+          `${import.meta.env.VITE_BACKEND_AUTH}/auth/refresh-token`,
           { refreshToken },
           { timeout: 5000 } // 5-second timeout
         );
@@ -59,7 +59,7 @@ API.interceptors.response.use(
       } catch (refreshError) {
         console.error("Refresh token failed:", refreshError);
         localStorage.clear();
-        window.location.href = process.env.REACT_APP_LOGIN_URL || "/";
+        window.location.href = import.meta.env.VITE_LOGIN_URL || "login";
         return Promise.reject(refreshError);
       }
     }
