@@ -46,19 +46,29 @@ const ChartContent = () => {
     }
   };
 
+  // useEffect(() => {
+  //   localStorage.setItem('selectedParameter', selectedParameter);
+  //   const id = localStorage.getItem('id');
+  // },[selectedParameter]);
   const fetchChartData = async (parameter, start, end) => {
     try {
       setLoading(true);
       setError(null);
-      
+      const headers = {};
       const formatDate = (date) => {
         return date.toISOString().split('T')[0];
       };
-
+      const id = localStorage.getItem('id');
+      if (!id) {
+        throw new Error('User ID is required in headers');
+      }
+      if(id){
+        headers["x-user-id"] = id;
+      }
       const response = await fetch(
-        `http://localhost:4000/api/v2/getChart?parameter=${parameter}&startdate=${formatDate(start)}&enddate=${formatDate(end)}`
-      );
-      
+        `http://localhost:4000/api/v2/getChart?parameter=${parameter}&startdate=${formatDate(start)}&enddate=${formatDate(end)}`, {
+          headers
+        });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to fetch chart data');
@@ -84,10 +94,18 @@ const ChartContent = () => {
   const fetchLiveData = async (parameter) => {
     try {
       setError(null);
-
+      const headers = {};
+      const id = localStorage.getItem('id');
+      if (!id) {
+        throw new Error('User ID is required in headers');
+      }
+      if(id){
+        headers["x-user-id"] = id;
+      }
       const response = await fetch(
-        `http://localhost:4000/api/v2/getLiveChart?parameter=${parameter}`
-      );
+        `http://localhost:4000/api/v2/getLiveChart?parameter=${parameter}`, {
+          headers
+        });
       
       if (!response.ok) {
         const errorData = await response.json();
@@ -236,50 +254,50 @@ const ChartContent = () => {
   return (
     <div className="h-screen bg-[rgba(17,25,67,1)] p-4">
       <div className="xl:h-[95%] flex flex-col">
-        <div className="flex items-center justify-evenly gap-4 p-4 border rounded-2xl border-gray-400 ">
+        <div className="flex items-center gap-4 p-4 border border-gray-400 justify-evenly rounded-2xl ">
           <div className="w-56">
-            <label className="text-white text-sm mb-1 ">Select Parameter</label>
+            <label className="mb-1 text-sm text-white ">Select Parameter</label>
             <Dropdown />
           </div>
 
           <div>
-            <label className="text-white text-sm mb-1">
+            <label className="mb-1 text-sm text-white">
               Live Data / Date Filter Toggle
             </label>
 
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-white text-xs">Date Filter</span>
+                <span className="text-xs text-white">Date Filter</span>
                 <Switch
                   checked={enabled}
                   onChange={setEnabled}
-                  className="group relative flex h-7 w-14 cursor-pointer rounded-full bg-white/10 p-1 ease-in-out focus:not-data-focus:outline-none data-checked:bg-white/10 data-focus:outline data-focus:outline-white"
+                  className="relative flex p-1 ease-in-out rounded-full cursor-pointer group h-7 w-14 bg-white/10 focus:not-data-focus:outline-none data-checked:bg-white/10 data-focus:outline data-focus:outline-white"
                 >
                   <span
                     aria-hidden="true"
-                    className="pointer-events-none inline-block size-5 translate-x-0 rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out group-data-checked:translate-x-7"
+                    className="inline-block transition duration-200 ease-in-out translate-x-0 bg-white rounded-full shadow-lg pointer-events-none size-5 ring-0 group-data-checked:translate-x-7"
                   />
                 </Switch>
-                <span className="text-white text-xs">Live Data</span>
+                <span className="text-xs text-white">Live Data</span>
               </div>
             </div>
           </div>
           {!enabled && (
             <>
               <div className="flex flex-col">
-                <label className="text-white text-sm mb-1">Start Date</label>
+                <label className="mb-1 text-sm text-white">Start Date</label>
                 <DatePicker
                   selected={startDate}
                   onChange={(date) => setStartDate(date)}
-                  className="px-3 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:border-blue-500"
+                  className="px-3 py-2 text-white border rounded bg-white/10 border-white/20 focus:outline-none focus:border-blue-500"
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-white text-sm mb-1">End Date</label>
+                <label className="mb-1 text-sm text-white">End Date</label>
                 <DatePicker
                   selected={endDate}
                   onChange={(date) => setEndDate(date)}
-                  className="px-3 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:border-blue-500"
+                  className="px-3 py-2 text-white border rounded bg-white/10 border-white/20 focus:outline-none focus:border-blue-500"
                 />
               </div>
            
@@ -296,16 +314,16 @@ const ChartContent = () => {
           </button> </>
           )}
 
-          <div className='text-white text-center'>
+          <div className='text-center text-white'>
             Total Data Points: <span id="data-point-count" className="font-semibold">{dataPointCountRef.current}</span>
           </div>
         </div>
-        <div className="flex-1 p-4 bg-white/5 rounded-lg m-4 border border-gray-400">
+        <div className="flex-1 p-4 m-4 border border-gray-400 rounded-lg bg-white/5">
           <div className="h-[92%] w-full">
             {loading ? (
-              <div className="text-white text-center">Loading...</div>
+              <div className="text-center text-white">Loading...</div>
             ) : error ? (
-              <div className="text-red-500 text-center">{error}</div>
+              <div className="text-center text-red-500">{error}</div>
             ) : chartData ? (
               <Line
                 ref={chartRef}
@@ -325,7 +343,7 @@ const ChartContent = () => {
                 options={options}
               />
             ) : (
-              <div className="text-white text-center">Select a date range and parameter to view data</div>
+              <div className="text-center text-white">Select a date range and parameter to view data</div>
             )}
           </div>
         </div>
