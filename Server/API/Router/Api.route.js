@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.get('/getDashboard', ApiController.dashboardApi);
 router.get('/getChart', ApiController.chartDate);
+router.get('/allgetChart', ApiController.allchartDate);
 router.get('/getLiveChart', ApiController.chartLive);
 router.get('/ids', ApiController.getUniqueIds);
 // router.get('/signal', ApiController.signalSeries);
