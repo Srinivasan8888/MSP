@@ -48,14 +48,14 @@ const ReportContent = () => {
       }
       if (selectedParameter.id === 'all') {
         response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}api/v1/allgetChart?startdate=${startDate}&enddate=${endDate}`,
+          `${import.meta.env.VITE_BACKEND_URL}api/v2/allgetChart?startdate=${startDate}&enddate=${endDate}`,
           {
             headers
           }
         )
       } else {
         response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}api/v1/getChart?parameter=${selectedParameter.id}&startdate=${startDate}&enddate=${endDate}`,
+          `${import.meta.env.VITE_BACKEND_URL}api/v2/getChart?parameter=${selectedParameter.id}&startdate=${startDate}&enddate=${endDate}`,
           {
             headers
           }
