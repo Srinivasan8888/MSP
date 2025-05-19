@@ -66,7 +66,7 @@ const ChartContent = () => {
         headers["x-user-id"] = id;
       }
       const response = await fetch(
-        `http://localhost:4000/api/v2/getChart?parameter=${parameter}&startdate=${formatDate(start)}&enddate=${formatDate(end)}`, {
+        `${import.meta.env.BACKEND_URL_GET}getChart?parameter=${parameter}&startdate=${formatDate(start)}&enddate=${formatDate(end)}`, {
           headers
         });
       if (!response.ok) {

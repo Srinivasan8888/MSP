@@ -77,8 +77,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        // `${process.env.BACKEND_AUTH}auth/login`,
-        `http://localhost:4000/auth/login`,
+        `${import.meta.env.VITE_BACKEND_AUTH}login`,
         { email, password },
         {
           headers: {

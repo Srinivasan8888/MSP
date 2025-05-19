@@ -76,7 +76,7 @@ const ThresholdForm = memo(() => {
     setLoading(true);
     try {
       // const response = await API.post(`/api/v1/createThreshold?id=1401&minValue=${minValue}&maxValue=${maxValue}&parameter=${parameter}`, {
-        const response = await fetch(`http://localhost:4000/api/v1/createThreshold?id=${id}&minValue=${minValue}&maxValue=${maxValue}&parameter=${parameter}`, {
+        const response = await fetch(`${import.meta.env.BACKEND_URL_SET}createThreshold?id=${id}&minValue=${minValue}&maxValue=${maxValue}&parameter=${parameter}`, {
  
       method: 'POST',
       });

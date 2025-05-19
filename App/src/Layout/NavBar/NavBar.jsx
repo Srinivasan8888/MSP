@@ -22,7 +22,7 @@ const NavBar = () => {
     // Fetch IDs when component mounts
     const fetchIds = async () => {
       try {
-        const response = await fetch('http://localhost:4000/api/v2/ids');
+        const response = await fetch(`${import.meta.env.BACKEND_URL_GET}ids`);
         if (!response.ok) {
           throw new Error('Failed to fetch IDs');
         }

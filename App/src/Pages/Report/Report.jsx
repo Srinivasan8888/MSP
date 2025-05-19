@@ -48,14 +48,14 @@ const ReportContent = () => {
       }
       if (selectedParameter.id === 'all') {
         response = await fetch(
-          `http://localhost:4000/api/v2/allgetChart?startdate=${startDate}&enddate=${endDate}`,
+          `${import.meta.env.BACKEND_URL_GET}allgetChart?startdate=${startDate}&enddate=${endDate}`,
           {
             headers
           }
         )
       } else {
         response = await fetch(
-          `http://localhost:4000/api/v2/getChart?parameter=${selectedParameter.id}&startdate=${startDate}&enddate=${endDate}`,
+          `${import.meta.env.BACKEND_URL_GET}getChart?parameter=${selectedParameter.id}&startdate=${startDate}&enddate=${endDate}`,
           {
             headers
           }
