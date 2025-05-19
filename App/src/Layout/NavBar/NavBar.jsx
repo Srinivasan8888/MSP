@@ -73,7 +73,7 @@ const NavBar = () => {
 
       // Make logout request to backend
       const response = await axios.delete(
-        `${process.env.REACT_APP_SERVER_URL}auth/logout`,
+        `${process.env.VITE_BACKEND_URL}auth/logout`,
         {
           data: { refreshToken },
           headers: {

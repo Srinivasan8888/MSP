@@ -28,7 +28,7 @@ export const DashboardProvider = ({ children }) => {
         headers['x-user-id'] = id;
       }
       // const response = await API.get(`/api/v2/getDashboard?parameter=${parameter}`);
-      const response = await fetch(`${import.meta.env.BACKEND_URL_GET}getDashboard?parameter=${parameter}`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}api/v2/getDashboard?parameter=${parameter}`, {
         headers
       });
 
