@@ -103,7 +103,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="bg-white bg-gray-900 border-gray-200">
+    <nav className="bg-gray-900 border-gray-200 ">
       <div className="flex flex-wrap items-center justify-between max-w-screen-xl p-4 mx-auto">
         {/* Logo and Brand Name */}
         <Link
@@ -122,7 +122,7 @@ const NavBar = () => {
           <button
             onClick={toggleMenu}
             type="button"
-            className="inline-flex items-center justify-center w-10 h-10 p-2 text-sm text-gray-400 text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 hover:bg-gray-700 focus:ring-gray-600"
+            className="inline-flex items-center justify-center w-10 h-10 p-2 text-sm text-gray-500 rounded-lg md:hidden focus:outline-none focus:ring-2 hover:bg-gray-700 focus:ring-gray-600"
             aria-controls="navbar-search"
             aria-expanded={menuOpen}
           >
@@ -174,7 +174,7 @@ const NavBar = () => {
           </div> */}
           <div className="relative flex items-center w-56 p-1 mx-auto border border-gray-400 rounded-sm">
             <svg
-              className="w-4 h-4 mr-2 text-gray-400 text-gray-500"
+              className="w-4 h-4 mr-2 text-gray-500"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -240,7 +240,7 @@ const NavBar = () => {
           <button
             data-collapse-toggle="navbar-search"
             type="button"
-            className="inline-flex items-center justify-center w-10 h-10 p-2 text-sm text-gray-400 text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 hover:bg-gray-700 focus:ring-gray-600"
+            className="inline-flex items-center justify-center w-10 h-10 p-2 text-sm text-gray-500 rounded-lg md:hidden focus:outline-none focus:ring-2 hover:bg-gray-700 focus:ring-gray-600"
             aria-controls="navbar-search"
             aria-expanded="false"
           >
@@ -290,17 +290,17 @@ const NavBar = () => {
             <input
               type="text"
               id="search-navbar"
-              className="block w-full p-2 text-sm text-white text-gray-900 placeholder-gray-400 bg-gray-700 border border-gray-300 border-gray-600 rounded-lg ps-10 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+              className="block w-full p-2 text-sm text-gray-900 placeholder-gray-400 bg-gray-700 border border-gray-600 rounded-lg ps-10 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Search..."
             />
           </div>
 
           {/* Navigation Links */}
-          <ul className="flex flex-col p-4 mt-4 font-medium bg-gray-800 border border-gray-100 border-gray-700 rounded-lg md:p-0 bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white md:bg-gray-900">
+          <ul className="flex flex-col p-4 mt-4 font-medium bg-gray-800 border border-gray-700 rounded-lg md:p-0 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-gray-900">
             <li>
               <Link
                 to="/"
-                className="block px-3 py-2 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 md:text-blue-500"
+                className="block px-3 py-2 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 "
                 aria-current="page"
               >
                 Home
@@ -309,7 +309,7 @@ const NavBar = () => {
             <li>
               <Link
                 to="/chart"
-                className="block px-3 py-2 text-white text-gray-900 border-gray-700 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:hover:text-blue-500 hover:bg-gray-700 hover:text-white"
+                className="block px-3 py-2 text-gray-900 border-gray-700 rounded-sm md:hover:bg-transparent md:hover:text-blue-700 md:p-0 hover:bg-gray-700 hover:text-white"
               >
                 Chart
               </Link>
@@ -317,7 +317,7 @@ const NavBar = () => {
             <li>
               <Link
                 to="/report"
-                className="block px-3 py-2 text-white text-gray-900 border-gray-700 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:hover:text-blue-500 hover:bg-gray-700 hover:text-white"
+                className="block px-3 py-2 text-gray-900 border-gray-700 rounded-sm md:hover:bg-transparent md:hover:text-blue-700 md:p-0 hover:bg-gray-700 hover:text-white"
               >
                 Report
               </Link>
@@ -325,7 +325,7 @@ const NavBar = () => {
             <li>
               <Link
                 to="/settings"
-                className="block px-3 py-2 text-white text-gray-900 border-gray-700 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:hover:text-blue-500 hover:bg-gray-700 hover:text-white"
+                className="block px-3 py-2 text-gray-900 border-gray-700 rounded-sm md:hover:bg-transparent md:hover:text-blue-700 md:p-0 hover:bg-gray-700 hover:text-white"
               >
                 Settings
               </Link>
@@ -333,7 +333,7 @@ const NavBar = () => {
             <li>
               <button
                 onClick={handleLogout}
-                className="block w-full px-3 py-2 text-left text-white text-gray-900 border-gray-700 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700 md:p-0 md:hover:text-red-500 hover:bg-gray-700 hover:text-white"
+                className="block w-full px-3 py-2 text-left text-gray-900 border-gray-700 rounded-sm md:hover:bg-transparent md:hover:text-red-700 md:p-0 hover:bg-gray-700 hover:text-white"
                 style={{ background: "none", border: "none" }}
               >
                 Logout
