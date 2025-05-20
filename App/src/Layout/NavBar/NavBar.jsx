@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import logo from "../../images/Xyma-Logo.png";
+import logo from "../../Images/Xyma-Logo.png";
+
+
 import {
   Combobox,
   ComboboxButton,
