@@ -26,6 +26,20 @@ const LineGraph = memo(() => {
   const { dashboardData, loading } = useDashboard();
   const { selectedParameter } = useParameter();
 
+  const convertToIST = (utcDate) => {
+    const date = new Date(utcDate);
+    return date.toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
+  };
+
   const chartData = useMemo(() => {
     if (loading || !dashboardData || !selectedParameter) return null;
 
@@ -33,7 +47,7 @@ const LineGraph = memo(() => {
     if (!chartData || !chartData[selectedParameter]) return null;
 
     return {
-      labels: chartData.time,
+      labels: chartData.time.map(time => convertToIST(time)),
       datasets: [
         {
           label: selectedParameter.charAt(0).toUpperCase() + selectedParameter.slice(1),
