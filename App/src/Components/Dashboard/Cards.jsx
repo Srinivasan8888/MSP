@@ -117,16 +117,16 @@ const Card = memo(({
   return (
     <div className="w-full px-2 mb-4">
       <div className="rounded-lg bg-[#102d49] shadow-lg md:shadow-xl relative overflow-hidden lg:h-[120px] xl:h-24 2xl:h-28">
-        <div className="px-3 xl:pt-3 pt-8 pb-10 text-center relative z-10">
-          <p className="text-xs font-thin 2xl:text-sm xl:uppercase text-white flex items-center justify-center gap-1">
+        <div className="relative z-10 px-3 pt-8 pb-10 text-center xl:pt-3">
+          <p className="flex items-center justify-center gap-1 text-xs font-thin text-white 2xl:text-sm xl:uppercase">
             {title} <span className="lowercase">({unit})</span>
           </p>
-          <h3 className="xl:text-base 2xl:text-3xl text-white font-semibold leading-tight my-3">
+          <h3 className="my-3 font-semibold leading-tight text-white xl:text-base 2xl:text-3xl">
             {icon && <span className="inline-block w-6 h-6">{icon}</span>}{" "}
             {typeof value === "number" ? value.toFixed(1) : value}
           </h3>
         </div>
-        <div className="absolute bottom-0 inset-x-0">
+        <div className="absolute inset-x-0 bottom-0">
           <canvas ref={chartRef} height="70"></canvas>
         </div>
       </div>
@@ -138,6 +138,20 @@ Card.displayName = 'Card';
 
 const Cards = memo(() => {
   const { dashboardData, loading } = useDashboard();
+
+  const convertToIST = useCallback((utcDate) => {
+    const date = new Date(utcDate);
+    return date.toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
+  }, []);
 
   const cardData = useMemo(() => {
     if (loading || !dashboardData) return null;
@@ -300,22 +314,22 @@ const Cards = memo(() => {
   return (
     <div className="-mx-2 lg:flex lg:flex-wrap md:grid md:grid-cols-2">
       {cardsData.map((card, index) => (
-        <div key={index} className="w-full xl:w-1/6 px-2">
+        <div key={index} className="w-full px-2 xl:w-1/6">
           <Card {...card} />
         </div>
       ))}
 
       <div className="w-full xl:w-1/6 px-3 mb-4 h-[152px] lg:h-[120px] xl:h-[90px] 2xl:h-28">
         <div className="rounded-lg bg-[#102d49] shadow-lg md:shadow-xl relative overflow-hidden h-full flex flex-col justify-between">
-          <div className="px-3 xl:pt-3 pt-8 pb-10 text-center relative z-10">
-            <h4 className="text-xs font-thin 2xl:text-sm xl:uppercase text-white flex items-center justify-center gap-1">
+          <div className="relative z-10 px-3 pt-8 pb-10 text-center xl:pt-3">
+            <h4 className="flex items-center justify-center gap-1 text-xs font-thin text-white 2xl:text-sm xl:uppercase">
               Battery
             </h4>
             <div className="w-48 my-3 ml-28 lg:ml-0 2xl:ml-6">
-              <div className="shadow w-1/2 rounded border-2 border-gray-400 flex my-1 relative">
-                <div className="border-r-8 h-6 rounded-r absolute flex border-gray-400 ml-24 mt-2 z-10" />
+              <div className="relative flex w-1/2 my-1 border-2 border-gray-400 rounded shadow">
+                <div className="absolute z-10 flex h-6 mt-2 ml-24 border-r-8 border-gray-400 rounded-r" />
                 <div
-                  className="cursor-default bg-green-400 text-xs font-bold leading-none flex items-center justify-center m-1 py-4 text-center text-white"
+                  className="flex items-center justify-center py-4 m-1 text-xs font-bold leading-none text-center text-white bg-green-400 cursor-default"
                   style={{ width: `${getLatestValue(cardData.battery)}%` }}
                 >
                   <div className="absolute left-0 mx-8 text-gray-700">
@@ -330,16 +344,16 @@ const Cards = memo(() => {
 
       <div className="w-full xl:w-1/6 px-3 mb-4 h-[152px] lg:h-[120px] xl:h-[90px] 2xl:h-28">
         <div className="rounded-lg bg-[#102d49] shadow-lg md:shadow-xl relative overflow-hidden h-full flex flex-col justify-between">
-          <div className="px-3 xl:pt-3 pt-8 pb-10 text-center relative z-10">
-            <p className="text-xs font-thin 2xl:text-sm xl:uppercase text-white flex items-center justify-center gap-1">
+          <div className="relative z-10 px-3 pt-8 pb-10 text-center xl:pt-3">
+            <p className="flex items-center justify-center gap-1 text-xs font-thin text-white 2xl:text-sm xl:uppercase">
               System Status
             </p>
             <div className="flex items-center justify-center gap-2 mt-2">
-              <span className="inline-block w-3 h-3 rounded-full bg-green-500"></span>
-              <span className="text-sm xl:text-sm text-white">Online</span>
+              <span className="inline-block w-3 h-3 bg-green-500 rounded-full"></span>
+              <span className="text-sm text-white xl:text-sm">Online</span>
             </div>
-            <p className="text-base xl:text-sm text-white mt-1">
-              {getLatestValue(cardData.time)}
+            <p className="mt-1 text-base text-white xl:text-sm">
+              {convertToIST(getLatestValue(cardData.time))}
             </p>
           </div>
         </div>

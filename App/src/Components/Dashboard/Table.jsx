@@ -5,6 +5,20 @@ import { useDashboard } from '../../Context/DashboardContext'
 const Table = () => {
     const { dashboardData, loading } = useDashboard()
 
+    const convertToIST = (utcDate) => {
+        const date = new Date(utcDate);
+        return date.toLocaleString('en-IN', {
+            timeZone: 'Asia/Kolkata',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+    };
+
     if (loading || !dashboardData) {
         return <div className="text-white">Loading...</div>
     }
@@ -34,7 +48,7 @@ const Table = () => {
                 <tbody>
                     {allData.map((data, index) => (
                         <tr key={index} className="text-xs bg-[#1D254D] text-white">
-                            <td className="px-6 py-4">{data.createdAt}</td>
+                            <td className="px-6 py-4">{convertToIST(data.createdAt)}</td>
                             <td className="px-6 py-4">{data.vibration} mm/s</td>
                             <td className="px-6 py-4">{data.magneticflux} Gauss</td>
                             <td className="px-6 py-4">{data.rpm} RPM</td>

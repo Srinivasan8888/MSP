@@ -311,7 +311,7 @@ const NavBar = () => {
             <li>
               <Link
                 to="/chart"
-                className="block px-3 py-2 text-gray-900 border-gray-700 rounded-sm md:hover:bg-transparent md:hover:text-blue-700 md:p-0 hover:bg-gray-700 hover:text-white"
+               className="block px-3 py-2 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 "
               >
                 Chart
               </Link>
@@ -319,7 +319,7 @@ const NavBar = () => {
             <li>
               <Link
                 to="/report"
-                className="block px-3 py-2 text-gray-900 border-gray-700 rounded-sm md:hover:bg-transparent md:hover:text-blue-700 md:p-0 hover:bg-gray-700 hover:text-white"
+               className="block px-3 py-2 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 "
               >
                 Report
               </Link>
@@ -327,7 +327,7 @@ const NavBar = () => {
             <li>
               <Link
                 to="/settings"
-                className="block px-3 py-2 text-gray-900 border-gray-700 rounded-sm md:hover:bg-transparent md:hover:text-blue-700 md:p-0 hover:bg-gray-700 hover:text-white"
+               className="block px-3 py-2 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 "
               >
                 Settings
               </Link>
@@ -335,7 +335,7 @@ const NavBar = () => {
             <li>
               <button
                 onClick={handleLogout}
-                className="block w-full px-3 py-2 text-left text-gray-900 border-gray-700 rounded-sm md:hover:bg-transparent md:hover:text-red-700 md:p-0 hover:bg-gray-700 hover:text-white"
+                className="block w-full px-3 py-2 text-left text-red-700 border-gray-700 rounded-sm md:hover:bg-transparent md:hover:text-red-700 md:p-0 hover:bg-gray-700 hover:text-white"
                 style={{ background: "none", border: "none" }}
               >
                 Logout
