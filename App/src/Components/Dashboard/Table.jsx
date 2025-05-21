@@ -34,7 +34,7 @@ const Table = () => {
                 <tbody>
                     {allData.map((data, index) => (
                         <tr key={index} className="text-xs bg-[#1D254D] text-white">
-                            <td className="px-6 py-4">{data.time}</td>
+                            <td className="px-6 py-4">{data.createdAt}</td>
                             <td className="px-6 py-4">{data.vibration} mm/s</td>
                             <td className="px-6 py-4">{data.magneticflux} Gauss</td>
                             <td className="px-6 py-4">{data.rpm} RPM</td>
