@@ -12,8 +12,8 @@ const Table = () => {
     const { allData } = dashboardData
 
     return (
-        <div className="relative overflow-x-auto overflow-y-auto scrollbar-custom h-full rounded-xl border border-gray-400">
-            <table className="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
+        <div className="relative h-full overflow-x-auto overflow-y-auto border border-gray-400 scrollbar-custom rounded-xl">
+            <table className="w-full text-xs text-left text-gray-500 rtl:text-right dark:text-gray-400 ">
                 <thead className="text-xs text-white uppercase   sticky top-0 z-10 rounded-xl bg-[#293056]">
                 {/* bg-[rgba(17,45,73,1)] */}
                     <tr>
@@ -34,7 +34,7 @@ const Table = () => {
                 <tbody>
                     {allData.map((data, index) => (
                         <tr key={index} className="text-xs bg-[#1D254D] text-white">
-                            <td className="px-6 py-4">{data.TIME}</td>
+                            <td className="px-6 py-4">{data.createdAt}</td>
                             <td className="px-6 py-4">{data.vibration} mm/s</td>
                             <td className="px-6 py-4">{data.magneticflux} Gauss</td>
                             <td className="px-6 py-4">{data.rpm} RPM</td>
