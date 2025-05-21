@@ -50,10 +50,10 @@ const MSPSchema = new Schema({
         type: String,
         default: null,
     },
-    // TIME: {
-    //     type: String,
-    //     default: null,
-    // }
+    TIME: {
+        type: String,
+        default: null,
+    }
 }, {
     timestamps: true
 });

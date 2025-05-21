@@ -93,7 +93,7 @@ export const dashboardApi = async (req, res) => {
       airquality: recentData.map(item => parseFloat(item.airquality)),
       signal: recentData.map(item => parseFloat(item.signal)),
       battery: recentData.map(item => parseFloat(item.battery)),
-      time: recentData.map(item => item.createdAt),
+      time: recentData.map(item => item.TIME),
     };
 
     const allData = await mspModel
@@ -115,11 +115,11 @@ export const dashboardApi = async (req, res) => {
         .find({ id: userId })
         .sort({ createdAt: -1 })
         .limit(100)
-        .select({ [parameter]: 1, createdAt: 1 });
+        .select({ [parameter]: 1, TIME: 1 });
 
       chartData = {
         [parameter]: selectedData.map(item => parseFloat(item[parameter])),
-        time: selectedData.map(item => item.createdAt)
+        time: selectedData.map(item => item.TIME)
       };
 
       thresholdData = await ThresholdModel.find({ parameter });
@@ -191,7 +191,6 @@ export const dashboardApi = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
 
 // export const allchartDate = async (req, res) => {
 //   const { startdate, enddate } = req.query;

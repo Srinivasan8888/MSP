@@ -15,7 +15,7 @@ export const createMsp = async (req, res) => {
     airquality,
     signal,
     battery,
-    // time,
+    time,
   } = req.query;
 
   // Validate required fields
@@ -30,8 +30,9 @@ export const createMsp = async (req, res) => {
     pressure === undefined ||
     altitude === undefined ||
     airquality === undefined ||
-    signal === undefined 
-    //|| time === undefined
+    signal === undefined ||
+    battery === undefined ||
+    time === undefined
   ) {
     return res.status(400).json({ error: "All fields are required." });
   }
@@ -50,7 +51,7 @@ export const createMsp = async (req, res) => {
       airquality: String(airquality),
       signal: String(signal),
       battery: String(battery),
-      // TIME: String(time)
+      TIME: String(time)
     });
 
     const savedSensor = await newSensor.save();
