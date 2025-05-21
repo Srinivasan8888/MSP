@@ -38,6 +38,20 @@ const ChartContent = () => {
   const chartRef = useRef(null);
   const dataPointCountRef = useRef(0);
 
+  const convertToIST = (utcDate) => {
+    const date = new Date(utcDate);
+    return date.toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
+  };
+
   const updateDataPointCount = (count) => {
     dataPointCountRef.current = count;
     const countElement = document.getElementById('data-point-count');
@@ -80,7 +94,10 @@ const ChartContent = () => {
         setError('No data available for the selected date range');
         setChartData(null);
       } else {
-        setChartData(data.chartData);
+        setChartData({
+          [parameter]: data.chartData[parameter],
+          time: data.chartData.time.map(time => convertToIST(time))
+        });
       }
     } catch (err) {
       setError(err.message);
@@ -139,7 +156,7 @@ const ChartContent = () => {
           // Append only new data points
           const newData = {
             [parameter]: [...previousDataRef.current[parameter], ...newDataPoints],
-            time: [...previousDataRef.current.time, ...newTimePoints]
+            time: [...previousDataRef.current.time, ...newTimePoints].map(time => convertToIST(time))
           };
           
           // Keep only the last 100 data points
@@ -165,7 +182,7 @@ const ChartContent = () => {
         // First time data
         const initialData = {
           [parameter]: data.chartData[parameter],
-          time: data.chartData.time
+          time: data.chartData.time.map(time => convertToIST(time))
         };
         setChartData(initialData);
         previousDataRef.current = initialData;

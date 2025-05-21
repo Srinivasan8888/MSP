@@ -14,6 +14,20 @@ const ReportContent = () => {
   const endDateInputRef = useRef(null)
   const [selectedParameter, setSelectedParameter] = useState({ id: 'all', name: 'All' })
 
+  const convertToIST = (utcDate) => {
+    const date = new Date(utcDate);
+    return date.toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
+  };
+
   const handleDateChange = (e) => {
     const { name, value } = e.target
     if (name === 'startdate') {
@@ -79,7 +93,7 @@ const ReportContent = () => {
         // For "All" selection, create a row for each timestamp with all parameters
         const times = data.chartData.time
         excelData = times.map((time, index) => {
-          const row = { Time: time }
+          const row = { Time: convertToIST(time) }
           Object.keys(data.chartData).forEach(key => {
             if (key !== 'time') {
               row[key.charAt(0).toUpperCase() + key.slice(1)] = data.chartData[key][index]
@@ -90,7 +104,7 @@ const ReportContent = () => {
       } else {
         // For single parameter selection
         excelData = data.chartData.time.map((time, index) => ({
-          Time: time,
+          Time: convertToIST(time),
           [selectedParameter.name]: data.chartData[selectedParameter.id][index]
         }))
       }
